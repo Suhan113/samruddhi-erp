@@ -1,9 +1,19 @@
 import { NavLink } from "react-router-dom";
 import {
-  RiDashboardLine, RiGroupLine, RiLandscapeLine, RiFlaskLine,
-  RiFileTextLine, RiTimeLine, RiPlantLine, RiDatabase2Line,
-  RiTeamLine, RiTruckLine, RiCoinsLine, RiBarChartLine,
-  RiSettings4Line
+  RiDashboardLine,
+  RiGroupLine,
+  RiLandscapeLine,
+  RiFlaskLine,
+  RiFileTextLine,
+  RiTimeLine,
+  RiPlantLine,
+  RiDatabase2Line,
+  RiTeamLine,
+  RiTruckLine,
+  RiCoinsLine,
+  RiBarChartLine,
+  RiSettings4Line,
+  RiLeafLine
 } from "react-icons/ri";
 
 const menuItems = [
@@ -24,19 +34,32 @@ const menuItems = [
 
 export default function Sidebar() {
   return (
-    <aside className="sidebar">
-      <div className="sidebar-brand">
-        <img src="/logo.png" alt="Samruddhi Organics" />
+    <aside style={sidebarStyle}>
+      {/* Brand Header */}
+      <div style={{ ...brandStyle, padding: "20px", display: "flex", justifyContent: "center", borderBottom: "1px solid rgba(255, 255, 255, 0.08)" }}>
+        <img
+          src="/logo.png"
+          alt="Samruddhi Organics"
+          style={{ width: "100%", maxHeight: "90px", objectFit: "contain" }}
+        />
       </div>
 
-      <nav className="sidebar-nav">
+      {/* Nav Menu */}
+      <nav style={navStyle}>
         {menuItems.map((item) => {
           const Icon = item.icon;
           return (
             <NavLink
               key={item.to}
               to={item.to}
-              className={({ isActive }) => `sidebar-link ${isActive ? "active" : ""}`}
+              style={({ isActive }) => ({
+                ...linkStyle,
+                background: isActive ? "rgba(16, 185, 129, 0.15)" : "transparent",
+                color: isActive ? "#ffffff" : "#a7f3d0",
+                fontWeight: isActive ? "600" : "400",
+                borderLeft: isActive ? "4px solid #10b981" : "4px solid transparent",
+                paddingLeft: isActive ? "12px" : "16px",
+              })}
             >
               <Icon size={18} style={{ flexShrink: 0 }} />
               <span>{item.label}</span>
@@ -45,9 +68,88 @@ export default function Sidebar() {
         })}
       </nav>
 
-      <div className="sidebar-footer">
-        <p>v1.0.0 (Commercial)</p>
+      {/* Footer info */}
+      <div style={footerStyle}>
+        <p style={versionStyle}>v1.0.0 (Commercial)</p>
       </div>
     </aside>
   );
 }
+
+// Styling definitions
+const sidebarStyle = {
+  width: "260px",
+  background: "var(--bg-sidebar)",
+  color: "#ffffff",
+  display: "flex",
+  flexDirection: "column",
+  height: "100vh",
+  position: "sticky",
+  top: 0,
+  borderRight: "1px solid rgba(16, 185, 129, 0.1)",
+  zIndex: 100,
+};
+
+const brandStyle = {
+  padding: "24px 20px",
+  display: "flex",
+  alignItems: "center",
+  gap: "12px",
+  borderBottom: "1px solid rgba(255, 255, 255, 0.05)",
+};
+
+const logoIconStyle = {
+  width: "36px",
+  height: "36px",
+  borderRadius: "10px",
+  background: "rgba(16, 185, 129, 0.12)",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  border: "1px solid rgba(16, 185, 129, 0.2)",
+};
+
+const brandTitleStyle = {
+  fontSize: "18px",
+  fontWeight: 700,
+  color: "#ffffff",
+  lineHeight: "1.2",
+};
+
+const brandSubtitleStyle = {
+  fontSize: "11px",
+  color: "#34d399",
+  letterSpacing: "0.05em",
+  textTransform: "uppercase",
+};
+
+const navStyle = {
+  flex: 1,
+  padding: "20px 0",
+  display: "flex",
+  flexDirection: "column",
+  gap: "4px",
+  overflowY: "auto",
+};
+
+const linkStyle = {
+  display: "flex",
+  alignItems: "center",
+  gap: "12px",
+  padding: "10px 16px",
+  textDecoration: "none",
+  fontSize: "13px",
+  transition: "all var(--transition-fast)",
+};
+
+const footerStyle = {
+  padding: "16px 20px",
+  borderTop: "1px solid rgba(255, 255, 255, 0.05)",
+  textAlign: "center",
+};
+
+const versionStyle = {
+  fontSize: "11px",
+  color: "#34d399",
+  opacity: 0.6,
+};
