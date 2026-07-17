@@ -4,14 +4,12 @@ import Navbar from "./Navbar";
 
 export default function MainLayout() {
   return (
-    <div style={layoutContainerStyle}>
+    <div className="main-layout-container">
       <Sidebar />
-
-      <div style={contentAreaStyle}>
+      <div className="content-area">
         <Navbar />
-        
-        <main style={mainContentStyle}>
-          <div className="animate-fade-in" style={innerContainerStyle}>
+        <main className="main-content">
+          <div className="animate-fade-in inner-container">
             <Outlet />
           </div>
         </main>
@@ -19,31 +17,3 @@ export default function MainLayout() {
     </div>
   );
 }
-
-const layoutContainerStyle = {
-  display: "flex",
-  height: "100vh",
-  width: "100vw",
-  overflow: "hidden",
-  background: "var(--bg-app)",
-};
-
-const contentAreaStyle = {
-  flex: 1,
-  display: "flex",
-  flexDirection: "column",
-  height: "100vh",
-  overflow: "hidden",
-};
-
-const mainContentStyle = {
-  flex: 1,
-  overflowY: "auto",
-  padding: "32px",
-};
-
-const innerContainerStyle = {
-  maxWidth: "1400px",
-  margin: "0 auto",
-  width: "100%",
-};
