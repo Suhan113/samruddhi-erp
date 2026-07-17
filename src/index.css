@@ -791,3 +791,26 @@ textarea.form-input { resize: vertical; min-height: 90px; }
   .top-navbar-notif      { width: 30px; height: 30px; }
   .page-title            { font-size: 16px; }
 }
+/* Ensure the main top nav is high up */
+.row-navbar, .top-navbar {
+  position: fixed;
+  z-index: 1000;
+}
+
+/* The mobile slide-out container must have the absolute highest priority */
+.navbar-links-wrapper.mobile-open, .mobile-drawer {
+  z-index: 1010 !important; /* Forces it to sit above the backdrop sheet */
+  pointer-events: auto;     /* Ensures all clicks pass to the links clearly */
+}
+
+/* The transparent mask behind the drawer */
+.mobile-nav-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  z-index: 999;             /* Sits safely between the page (0) and drawer (1010) */
+  
+  /* CRITICAL: Allows clicks to pass through if it's hidden, or only catches dismisses */
+  pointer-events: auto; 
+}
