@@ -25,9 +25,9 @@
   --text-white: #ffffff;
 
   /* Shadows */
-  --shadow-sm:      0 1px 3px rgba(0,0,0,0.06);
-  --shadow-md:      0 4px 12px rgba(0,0,0,0.08);
-  --shadow-lg:      0 10px 30px rgba(0,0,0,0.10);
+  --shadow-sm:       0 1px 3px rgba(0,0,0,0.06);
+  --shadow-md:       0 4px 12px rgba(0,0,0,0.08);
+  --shadow-lg:       0 10px 30px rgba(0,0,0,0.10);
   --shadow-premium: 0 20px 40px rgba(6,78,59,0.07);
 
   /* Glass */
@@ -102,6 +102,7 @@ a { text-decoration: none; color: inherit; }
   flex: 1;
   display: flex;
   flex-direction: column;
+  margin-top: 108px; /* Safe-zone buffer so content doesn't tuck behind the desktop double-row navbar */
 }
 
 .main-content {
@@ -117,17 +118,18 @@ a { text-decoration: none; color: inherit; }
 }
 
 /* ============================================================
-   TOP NAVBAR — Row 1: Brand + Search + Actions
-                Row 2: Nav Links
+   TOP NAVBAR — Fixed Row Layout Shell
    ============================================================ */
-.top-navbar {
+.top-navbar, .row-navbar {
   width: 100%;
   background: var(--bg-sidebar);
   display: flex;
   flex-direction: column;
-  position: sticky;
+  position: fixed; /* Forced to absolute fixed layer so screen scroll remains smooth */
   top: 0;
-  z-index: 500;
+  left: 0;
+  right: 0;
+  z-index: 1000; /* Main bar baseline layer layout priorities */
   box-shadow: 0 2px 20px rgba(6,78,59,0.3);
   flex-shrink: 0;
 }
@@ -383,17 +385,19 @@ a { text-decoration: none; color: inherit; }
 .mobile-menu-btn:hover { background: rgba(255,255,255,0.15); }
 
 /* ============================================================
-   MOBILE DRAWER
+   MOBILE DRAWER & BACKDROP SYSTEM
    ============================================================ */
 .desktop-nav { display: flex; }
 
-.mobile-nav-drawer {
+.mobile-nav-drawer, .mobile-drawer {
   display: none;
   flex-direction: column;
   background: var(--bg-sidebar);
   border-top: 1px solid rgba(255,255,255,0.06);
   overflow: hidden;
   max-height: 0;
+  z-index: 1010 !important; /* Stacked above the background backdrop blur layer */
+  pointer-events: auto; /* Activates clicks clearly through to buttons inside */
   transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .mobile-nav-drawer.open { max-height: 100vh; }
@@ -423,11 +427,13 @@ a { text-decoration: none; color: inherit; }
 }
 .mobile-nav-search input::placeholder { color: rgba(255,255,255,0.35); }
 
-.mobile-nav-links {
+.mobile-nav-links, .navbar-links-wrapper.mobile-open {
   display: flex;
   flex-direction: column;
   padding: 6px 12px;
   gap: 2px;
+  z-index: 1010 !important;
+  pointer-events: auto;
 }
 
 .mobile-nav-link {
@@ -471,8 +477,11 @@ a { text-decoration: none; color: inherit; }
 .mobile-nav-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.5);
-  z-index: 490;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 999; /* Positioned right behind the open links modal panel */
+  pointer-events: auto;
 }
 
 /* ============================================================
@@ -742,6 +751,7 @@ textarea.form-input { resize: vertical; min-height: 90px; }
   .top-nav-link { padding: 10px 9px; font-size: 11.5px; }
   .top-navbar-date { display: none; }
   .main-content { padding: 20px 24px; }
+  .content-area { margin-top: 108px; }
 }
 
 /* ============================================================
@@ -752,6 +762,9 @@ textarea.form-input { resize: vertical; min-height: 90px; }
   .mobile-menu-btn  { display: flex; }
   .desktop-nav      { display: none; }
   .mobile-nav-drawer { display: flex; }
+  
+  /* Shift main view layout cleanly down below compact single-row header */
+  .content-area { margin-top: 60px; }
 
   /* Compact header */
   .top-navbar-header { padding: 10px 14px; gap: 10px; }
@@ -790,27 +803,4 @@ textarea.form-input { resize: vertical; min-height: 90px; }
   .top-navbar-title span { display: none; }
   .top-navbar-notif      { width: 30px; height: 30px; }
   .page-title            { font-size: 16px; }
-}
-/* Ensure the main top nav is high up */
-.row-navbar, .top-navbar {
-  position: fixed;
-  z-index: 1000;
-}
-
-/* The mobile slide-out container must have the absolute highest priority */
-.navbar-links-wrapper.mobile-open, .mobile-drawer {
-  z-index: 1010 !important; /* Forces it to sit above the backdrop sheet */
-  pointer-events: auto;     /* Ensures all clicks pass to the links clearly */
-}
-
-/* The transparent mask behind the drawer */
-.mobile-nav-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(4px);
-  z-index: 999;             /* Sits safely between the page (0) and drawer (1010) */
-  
-  /* CRITICAL: Allows clicks to pass through if it's hidden, or only catches dismisses */
-  pointer-events: auto; 
 }
