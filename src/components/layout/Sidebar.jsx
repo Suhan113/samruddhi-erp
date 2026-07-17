@@ -1,19 +1,12 @@
+import { useState } from "react";
 import { NavLink } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
 import {
-  RiDashboardLine,
-  RiGroupLine,
-  RiLandscapeLine,
-  RiFlaskLine,
-  RiFileTextLine,
-  RiTimeLine,
-  RiPlantLine,
-  RiDatabase2Line,
-  RiTeamLine,
-  RiTruckLine,
-  RiCoinsLine,
-  RiBarChartLine,
-  RiSettings4Line,
-  RiLeafLine
+  RiDashboardLine, RiGroupLine, RiLandscapeLine, RiFlaskLine,
+  RiFileTextLine, RiTimeLine, RiPlantLine, RiDatabase2Line,
+  RiTeamLine, RiTruckLine, RiCoinsLine, RiBarChartLine,
+  RiSettings4Line, RiLogoutBoxRLine, RiUserLine,
+  RiSearchLine, RiNotification3Line, RiMenuLine, RiCloseLine
 } from "react-icons/ri";
 
 const menuItems = [
@@ -23,133 +16,160 @@ const menuItems = [
   { to: "/soil-tests", label: "Soil Tests", icon: RiFlaskLine },
   { to: "/recommendations", label: "Recommendations", icon: RiFileTextLine },
   { to: "/doses", label: "Dose Planner", icon: RiTimeLine },
-  { to: "/materials", label: "Materials Master", icon: RiPlantLine },
+  { to: "/materials", label: "Materials", icon: RiPlantLine },
   { to: "/inventory", label: "Inventory", icon: RiDatabase2Line },
   { to: "/employees", label: "Employees", icon: RiTeamLine },
   { to: "/suppliers", label: "Suppliers", icon: RiTruckLine },
-  { to: "/finance", label: "Finance Module", icon: RiCoinsLine },
-  { to: "/reports", label: "Reports Module", icon: RiBarChartLine },
+  { to: "/finance", label: "Finance", icon: RiCoinsLine },
+  { to: "/reports", label: "Reports", icon: RiBarChartLine },
   { to: "/settings", label: "Settings", icon: RiSettings4Line },
 ];
 
 export default function Sidebar() {
+  const { user, logout } = useAuth();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const today = new Date().toLocaleDateString("en-IN", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+
+  const closeMobileMenu = () => setMobileMenuOpen(false);
+
   return (
-    <aside style={sidebarStyle}>
-      {/* Brand Header */}
-      <div style={{ ...brandStyle, padding: "20px", display: "flex", justifyContent: "center", borderBottom: "1px solid rgba(255, 255, 255, 0.08)" }}>
-        <img
-          src="/logo.png"
-          alt="Samruddhi Organics"
-          style={{ width: "100%", maxHeight: "90px", objectFit: "contain" }}
-        />
+    <header className="top-navbar">
+      {/* ── Row 1: Brand / Search / User Actions ── */}
+      <div className="top-navbar-header">
+        {/* Hamburger (mobile only) */}
+        <button
+          className="mobile-menu-btn"
+          onClick={() => setMobileMenuOpen((o) => !o)}
+          aria-label="Toggle navigation"
+        >
+          {mobileMenuOpen ? <RiCloseLine size={22} /> : <RiMenuLine size={22} />}
+        </button>
+
+        {/* Brand */}
+        <div className="top-navbar-brand">
+          <img src="/logo.png" alt="Samruddhi Organics" />
+          <div className="top-navbar-title">
+            <h2>Samruddhi Organics ERP</h2>
+            <span>v1.0 · Commercial</span>
+          </div>
+        </div>
+
+        {/* Search (hidden on mobile) */}
+        <div className="top-navbar-search">
+          <RiSearchLine size={15} />
+          <input
+            type="text"
+            placeholder="Search farmers, plots, soil tests…"
+          />
+        </div>
+
+        {/* Right: Date · Bell · Profile · Logout */}
+        <div className="top-navbar-actions">
+          <div className="top-navbar-date">{today}</div>
+
+          <div className="top-navbar-notif" title="Notifications">
+            <RiNotification3Line size={17} />
+            <span className="top-navbar-notif-dot">3</span>
+          </div>
+
+          {user && (
+            <div className="top-navbar-profile">
+              <div className="top-navbar-avatar">
+                <RiUserLine size={15} />
+              </div>
+              <div className="top-navbar-userinfo">
+                <span className="name">{user.name}</span>
+                <span className="role">{user.role || "Administrator"}</span>
+              </div>
+            </div>
+          )}
+
+          <button className="top-navbar-logout" onClick={logout} title="Sign Out">
+            <RiLogoutBoxRLine size={15} />
+            <span className="logout-label">Sign Out</span>
+          </button>
+        </div>
       </div>
 
-      {/* Nav Menu */}
-      <nav style={navStyle}>
+      {/* ── Row 2: Desktop Navigation Links ── */}
+      <nav className="top-navbar-nav desktop-nav">
         {menuItems.map((item) => {
           const Icon = item.icon;
           return (
             <NavLink
               key={item.to}
               to={item.to}
-              style={({ isActive }) => ({
-                ...linkStyle,
-                background: isActive ? "rgba(16, 185, 129, 0.15)" : "transparent",
-                color: isActive ? "#ffffff" : "#a7f3d0",
-                fontWeight: isActive ? "600" : "400",
-                borderLeft: isActive ? "4px solid #10b981" : "4px solid transparent",
-                paddingLeft: isActive ? "12px" : "16px",
-              })}
+              end={item.to === "/"}
+              className={({ isActive }) =>
+                `top-nav-link${isActive ? " active" : ""}`
+              }
             >
-              <Icon size={18} style={{ flexShrink: 0 }} />
+              <Icon size={15} />
               <span>{item.label}</span>
             </NavLink>
           );
         })}
       </nav>
 
-      {/* Footer info */}
-      <div style={footerStyle}>
-        <p style={versionStyle}>v1.0.0 (Commercial)</p>
+      {/* ── Mobile Drawer: Slide-down nav ── */}
+      <div className={`mobile-nav-drawer${mobileMenuOpen ? " open" : ""}`}>
+        {/* Mobile search */}
+        <div className="mobile-nav-search">
+          <RiSearchLine size={15} />
+          <input type="text" placeholder="Search…" />
+        </div>
+
+        {/* Mobile nav links */}
+        <nav className="mobile-nav-links">
+          {menuItems.map((item) => {
+            const Icon = item.icon;
+            return (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                end={item.to === "/"}
+                className={({ isActive }) =>
+                  `mobile-nav-link${isActive ? " active" : ""}`
+                }
+                onClick={closeMobileMenu}
+              >
+                <Icon size={18} />
+                <span>{item.label}</span>
+              </NavLink>
+            );
+          })}
+        </nav>
+
+        {/* Mobile user footer */}
+        {user && (
+          <div className="mobile-nav-footer">
+            <div className="mobile-nav-user">
+              <div className="top-navbar-avatar">
+                <RiUserLine size={15} />
+              </div>
+              <div className="top-navbar-userinfo">
+                <span className="name">{user.name}</span>
+                <span className="role">{user.role || "Administrator"}</span>
+              </div>
+            </div>
+            <button className="top-navbar-logout" onClick={() => { logout(); closeMobileMenu(); }}>
+              <RiLogoutBoxRLine size={15} />
+              <span>Sign Out</span>
+            </button>
+          </div>
+        )}
       </div>
-    </aside>
+
+      {/* Backdrop overlay for mobile drawer */}
+      {mobileMenuOpen && (
+        <div className="mobile-nav-backdrop" onClick={closeMobileMenu} />
+      )}
+    </header>
   );
 }
-
-// Styling definitions
-const sidebarStyle = {
-  width: "260px",
-  background: "var(--bg-sidebar)",
-  color: "#ffffff",
-  display: "flex",
-  flexDirection: "column",
-  height: "100vh",
-  position: "sticky",
-  top: 0,
-  borderRight: "1px solid rgba(16, 185, 129, 0.1)",
-  zIndex: 100,
-};
-
-const brandStyle = {
-  padding: "24px 20px",
-  display: "flex",
-  alignItems: "center",
-  gap: "12px",
-  borderBottom: "1px solid rgba(255, 255, 255, 0.05)",
-};
-
-const logoIconStyle = {
-  width: "36px",
-  height: "36px",
-  borderRadius: "10px",
-  background: "rgba(16, 185, 129, 0.12)",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  border: "1px solid rgba(16, 185, 129, 0.2)",
-};
-
-const brandTitleStyle = {
-  fontSize: "18px",
-  fontWeight: 700,
-  color: "#ffffff",
-  lineHeight: "1.2",
-};
-
-const brandSubtitleStyle = {
-  fontSize: "11px",
-  color: "#34d399",
-  letterSpacing: "0.05em",
-  textTransform: "uppercase",
-};
-
-const navStyle = {
-  flex: 1,
-  padding: "20px 0",
-  display: "flex",
-  flexDirection: "column",
-  gap: "4px",
-  overflowY: "auto",
-};
-
-const linkStyle = {
-  display: "flex",
-  alignItems: "center",
-  gap: "12px",
-  padding: "10px 16px",
-  textDecoration: "none",
-  fontSize: "13px",
-  transition: "all var(--transition-fast)",
-};
-
-const footerStyle = {
-  padding: "16px 20px",
-  borderTop: "1px solid rgba(255, 255, 255, 0.05)",
-  textAlign: "center",
-};
-
-const versionStyle = {
-  fontSize: "11px",
-  color: "#34d399",
-  opacity: 0.6,
-};
