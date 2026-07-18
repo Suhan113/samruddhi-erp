@@ -329,10 +329,10 @@ export default function Plots() {
       setForm(f => ({ ...f, customer_id: farmerId }));
     }
   };
-
-  const handleSubmit = async (e) => {
+const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.customer_id) return alert("Please select a farmer.");
+    
     try {
       const payload = {
         ...form,
@@ -341,16 +341,28 @@ export default function Plots() {
         plantation_year: Number(form.plantation_year) || null,
         organic_materials: JSON.stringify(form.organic_materials || []),
       };
+
+      let response;
       if (editingId) {
-        await db.update("plots", editingId, payload);
+        response = await db.update("plots", editingId, payload);
       } else {
-        await db.insert("plots", payload);
+        response = await db.insert("plots", payload);
       }
+
+      // --- ADD THIS LOGIC ---
+      if (response && response.error) {
+        console.error("Supabase Save Error:", response.error);
+        alert(`Failed to save: ${response.error.message}`);
+        return; // Stop here so the modal doesn't close
+      }
+      // ----------------------
+
       setShowModal(false);
       setForm(INITIAL_FORM);
       setEditingId(null);
       fetchData();
     } catch (err) {
+      console.error("Catch Block Error:", err);
       alert("Error saving plot: " + err.message);
     }
   };
