@@ -333,14 +333,23 @@ const handleSubmit = async (e) => {
   e.preventDefault();
 
   // 1. Create a copy of the form to avoid mutating state
-  const payload = { ...form };
+  cconst payload = {
+    ...form,
+    // THE FIX: Explicitly check for an empty string and force it to null.
+    // If the value is "", it will become null. Supabase accepts null for UUIDs if they are nullable.
+    customer_id: (form.customer_id && form.customer_id.trim() !== "") ? form.customer_id : null,
+    
+    area: Number(form.area) || 0,
+    number_of_plants: Number(form.number_of_plants) || 0,
+    plantation_year: Number(form.plantation_year) || null,
+    organic_materials: JSON.stringify(form.organic_materials || []),
+  };
 
-  // 2. FORCE VALIDATION: If customer_id is not a valid UUID format (36 chars), remove it or set to null
-  // A standard UUID looks like: 123e4567-e89b-12d3-a456-426614174000
-  if (!payload.customer_id || payload.customer_id.length < 30) {
-    console.warn("Invalid Customer ID detected, forcing to null.");
-    payload.customer_id = null; // Send null instead of ""
+  // FINAL SAFETY CHECK: If it is still null (or invalid), STOP.
+  if (!payload.customer_id) {
+    return alert("Please select a valid farmer from the list.");
   }
+ 
 
   // 3. Process numbers and JSON
   payload.area = Number(payload.area) || 0;
