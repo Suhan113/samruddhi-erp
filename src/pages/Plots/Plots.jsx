@@ -331,28 +331,32 @@ export default function Plots() {
 const handleSubmit = async (e) => {
   e.preventDefault();
 
-  // 1. Check if the ID is missing or empty
-  if (!form.customer_id || form.customer_id.trim() === "") {
-    return alert("Please select a valid farmer from the dropdown menu.");
-  }
-
   const payload = { ...form };
   
-  // 2. Process other fields...
+  // Explicitly remove the field so it is not sent to the database
+  delete payload.customer_id; 
+  
   payload.area = Number(payload.area) || 0;
   payload.number_of_plants = Number(payload.number_of_plants) || 0;
-  // ... rest of your processing
+  payload.plantation_year = Number(payload.plantation_year) || null;
+  payload.organic_materials = JSON.stringify(payload.organic_materials || []);
 
   try {
-    // 3. Now it is safe to insert because we know customer_id is a valid selection
     let response;
     if (editingId) {
       response = await db.update("plots", editingId, payload);
     } else {
       response = await db.insert("plots", payload);
     }
+    
+    // Check for errors returned by the database service
+    if (response && response.error) {
+      throw new Error(response.error.message);
+    }
 
     setShowModal(false);
+    setForm(INITIAL_FORM); // Ensure this is reset
+    setEditingId(null);
     fetchData();
   } catch (err) {
     console.error("DEBUG ERROR:", err);
