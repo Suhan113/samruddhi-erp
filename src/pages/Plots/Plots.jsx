@@ -338,14 +338,14 @@ const handleSubmit = async (e) => {
   }
   try {
     const payload = {
-      ...form,
-      // 2. Explicitly ensure customer_id is a valid string
-      customer_id: form.customer_id, 
-      area: Number(form.area) || 0,
-      number_of_plants: Number(form.number_of_plants) || 0,
-      plantation_year: Number(form.plantation_year) || null,
-      organic_materials: JSON.stringify(form.organic_materials || []),
-    };
+  ...form,
+  // This line ensures an empty string becomes 'null', which the DB accepts
+  customer_id: form.customer_id && form.customer_id.trim() !== "" ? form.customer_id : null,
+  area: Number(form.area) || 0,
+  number_of_plants: Number(form.number_of_plants) || 0,
+  plantation_year: Number(form.plantation_year) || null,
+  organic_materials: JSON.stringify(form.organic_materials || []),
+};
     
     // ... rest of your code
 
