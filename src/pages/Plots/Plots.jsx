@@ -1920,7 +1920,7 @@ function PlotFormModal({
             <div style={S.formGrid}>
               <div style={{ gridColumn: "1 / -1" }}>
                 <label className="form-label">Farmer / Customer *</label>
-                <select className="form-input" value={form.customer_id} onChange={e => handleFarmerChange(e.target.value)} required>
+               <select className="form-input" value={form.customer_id || ""} onChange={e => handleFarmerChange(e.target.value)}>
                   <option value="">— Select Customer —</option>
                   {customers.map(c => <option key={c.id} value={c.id}>{c.name} ({c.customer_number})</option>)}
                 </select>
