@@ -31,6 +31,7 @@ const ORGANIC_MATERIALS_OPTIONS = [
 ];
 
 const INITIAL_FORM = {
+  customer_id: "",
   plot_number: "",
   plot_name: "",
   village: "",
@@ -331,10 +332,14 @@ export default function Plots() {
 const handleSubmit = async (e) => {
   e.preventDefault();
 
+  // Validate that a customer is actually selected
+  if (!form.customer_id || form.customer_id === "") {
+    return alert("Please select a farmer before saving.");
+  }
+
   const payload = { ...form };
   
-  // Explicitly remove the field so it is not sent to the database
-  delete payload.customer_id; 
+  // No need to delete customer_id anymore!
   
   payload.area = Number(payload.area) || 0;
   payload.number_of_plants = Number(payload.number_of_plants) || 0;
@@ -349,18 +354,13 @@ const handleSubmit = async (e) => {
       response = await db.insert("plots", payload);
     }
     
-    // Check for errors returned by the database service
-    if (response && response.error) {
-      throw new Error(response.error.message);
-    }
-
     setShowModal(false);
-    setForm(INITIAL_FORM); // Ensure this is reset
+    setForm(INITIAL_FORM);
     setEditingId(null);
     fetchData();
   } catch (err) {
-    console.error("DEBUG ERROR:", err);
-    alert("Database Error: " + (err.message || "Invalid Data Format"));
+    console.error("Database Error:", err);
+    alert("Save failed: " + err.message);
   }
 };
   const handleEdit = (plot) => {
