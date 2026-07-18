@@ -31,7 +31,6 @@ const ORGANIC_MATERIALS_OPTIONS = [
 ];
 
 const INITIAL_FORM = {
-  customer_id: "",
   plot_number: "",
   plot_name: "",
   village: "",
