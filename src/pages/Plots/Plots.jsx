@@ -337,10 +337,10 @@ const handleSubmit = async (e) => {
     return alert("Please select a valid farmer.");
   }
   try {
-   const payload = {
+  const payload = {
   ...form,
-  // Force customer_id to null if it's an empty string or just whitespace
-  customer_id: (!form.customer_id || form.customer_id.trim() === "") ? null : form.customer_id,
+  // Update this specific line to force empty IDs to null
+  customer_id: (form.customer_id && form.customer_id.length > 20) ? form.customer_id : null,
   area: Number(form.area) || 0,
   number_of_plants: Number(form.number_of_plants) || 0,
   plantation_year: Number(form.plantation_year) || null,
