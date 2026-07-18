@@ -332,15 +332,18 @@ export default function Plots() {
 const handleSubmit = async (e) => {
   e.preventDefault();
 
-  // Validate that a customer is actually selected
-  if (!form.customer_id || form.customer_id === "") {
-    return alert("Please select a farmer before saving.");
+  const payload = { ...form };
+
+  // If customer_id is empty or the placeholder text, force it to null
+  if (!payload.customer_id || payload.customer_id === "" || payload.customer_id === "— Select Customer —") {
+    payload.customer_id = null;
   }
 
-  const payload = { ...form };
-  
-  // No need to delete customer_id anymore!
-  
+  // Basic validation - optional: remove if you allow plots without farmers
+  if (payload.customer_id === null) {
+    return alert("Please select a valid farmer from the list.");
+  }
+
   payload.area = Number(payload.area) || 0;
   payload.number_of_plants = Number(payload.number_of_plants) || 0;
   payload.plantation_year = Number(payload.plantation_year) || null;
@@ -354,6 +357,11 @@ const handleSubmit = async (e) => {
       response = await db.insert("plots", payload);
     }
     
+    // Check for database errors
+    if (response && response.error) {
+      throw new Error(response.error.message);
+    }
+
     setShowModal(false);
     setForm(INITIAL_FORM);
     setEditingId(null);
@@ -1910,10 +1918,16 @@ function PlotFormModal({
             <div style={S.formGrid}>
               <div style={{ gridColumn: "1 / -1" }}>
                 <label className="form-label">Farmer / Customer *</label>
-               <select className="form-input" value={form.customer_id || ""} onChange={e => handleFarmerChange(e.target.value)}>
-                  <option value="">— Select Customer —</option>
-                  {customers.map(c => <option key={c.id} value={c.id}>{c.name} ({c.customer_number})</option>)}
-                </select>
+              <select 
+  className="form-input" 
+  value={form.customer_id || ""} // If it is null, it becomes ""
+  onChange={e => handleFarmerChange(e.target.value)}
+>
+  <option value="">— Select Customer —</option>
+  {customers.map(c => (
+    <option key={c.id} value={c.id}>{c.name} ({c.customer_number})</option>
+  ))}
+</select>
               </div>
               <div>
                 <label className="form-label">Plot Number * (e.g. Plot-1)</label>
