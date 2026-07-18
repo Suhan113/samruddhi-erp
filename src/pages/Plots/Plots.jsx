@@ -332,37 +332,42 @@ export default function Plots() {
 const handleSubmit = async (e) => {
   e.preventDefault();
 
-  // Prepare payload
+  // Create a fresh payload
   const payload = { ...form };
-  
-  // Clean UUID
-  if (!payload.customer_id || payload.customer_id.trim() === "") {
+
+  // 1. HARD FORCED UUID CHECK
+  // If it's not a string of at least 30 chars, it is NOT a UUID. Force null.
+  if (typeof payload.customer_id !== 'string' || payload.customer_id.length < 30) {
     payload.customer_id = null;
   }
 
-  // Basic validation
+  // 2. Validate
   if (!payload.customer_id) {
-    return alert("Please select a valid farmer.");
+    return alert("Error: Please select a valid farmer from the list.");
   }
 
+  // 3. Clean numeric fields
+  payload.area = Number(payload.area) || 0;
+  payload.number_of_plants = Number(payload.number_of_plants) || 0;
+  payload.plantation_year = Number(payload.plantation_year) || null;
+  payload.organic_materials = JSON.stringify(payload.organic_materials || []);
+
   try {
+    // Log exactly what is being sent right before the call
+    console.log("PAYLOAD BEING SENT:", payload);
+
     let response;
     if (editingId) {
       response = await db.update("plots", editingId, payload);
     } else {
-      // THIS IS WHERE IT THROWS THE ERROR
       response = await db.insert("plots", payload);
     }
 
     setShowModal(false);
-    setForm(INITIAL_FORM);
-    setEditingId(null);
     fetchData();
   } catch (err) {
-    // IT JUMPS HERE
-    console.error("Caught error:", err);
-    // The UUID error message is inside err.message
-    alert(`Failed to save: ${err.message || "Unknown error"}`);
+    console.error("DEBUG ERROR:", err);
+    alert("Database Error: " + (err.message || "Invalid Data Format"));
   }
 };
   const handleEdit = (plot) => {
