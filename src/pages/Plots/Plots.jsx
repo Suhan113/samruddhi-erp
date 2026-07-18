@@ -332,40 +332,26 @@ export default function Plots() {
 const handleSubmit = async (e) => {
   e.preventDefault();
 
-  // 1. Manually build the payload from 'form'
+  // Prepare payload
   const payload = { ...form };
-
-  // 2. IMPORTANT: If customer_id is empty or invalid, set it to null. 
-  // DO NOT delete the key if the database expects it to exist.
-  // Set to null to satisfy the UUID type check.
-  if (!payload.customer_id || payload.customer_id.trim() === "" || payload.customer_id === "Select a Farmer") {
+  
+  // Clean UUID
+  if (!payload.customer_id || payload.customer_id.trim() === "") {
     payload.customer_id = null;
   }
 
-  // 3. Process numbers and JSON
-  payload.area = Number(payload.area) || 0;
-  payload.number_of_plants = Number(payload.number_of_plants) || 0;
-  payload.plantation_year = Number(payload.plantation_year) || null;
-  payload.organic_materials = JSON.stringify(payload.organic_materials || []);
-
-  // 4. Validate
+  // Basic validation
   if (!payload.customer_id) {
-    return alert("Please select a valid farmer from the list.");
+    return alert("Please select a valid farmer.");
   }
-
-  console.log("Sending Payload to Supabase:", payload); // Check this in F12 console
 
   try {
     let response;
     if (editingId) {
       response = await db.update("plots", editingId, payload);
     } else {
+      // THIS IS WHERE IT THROWS THE ERROR
       response = await db.insert("plots", payload);
-    }
-
-    if (response && response.error) {
-      alert(`Database Error: ${response.error.message}`);
-      return;
     }
 
     setShowModal(false);
@@ -373,7 +359,10 @@ const handleSubmit = async (e) => {
     setEditingId(null);
     fetchData();
   } catch (err) {
-    console.error("Catch Block Error:", err);
+    // IT JUMPS HERE
+    console.error("Caught error:", err);
+    // The UUID error message is inside err.message
+    alert(`Failed to save: ${err.message || "Unknown error"}`);
   }
 };
   const handleEdit = (plot) => {
