@@ -330,17 +330,25 @@ export default function Plots() {
     }
   };
 const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!form.customer_id) return alert("Please select a farmer.");
+  e.preventDefault();
+  
+  // 1. Ensure it's not empty, null, or a placeholder string
+  if (!form.customer_id || form.customer_id === "" || form.customer_id === "Select a Farmer") {
+    return alert("Please select a valid farmer.");
+  }
     
-    try {
-      const payload = {
-        ...form,
-        area: Number(form.area) || 0,
-        number_of_plants: Number(form.number_of_plants) || 0,
-        plantation_year: Number(form.plantation_year) || null,
-        organic_materials: JSON.stringify(form.organic_materials || []),
-      };
+  try {
+    const payload = {
+      ...form,
+      // 2. Explicitly ensure customer_id is a valid string
+      customer_id: form.customer_id, 
+      area: Number(form.area) || 0,
+      number_of_plants: Number(form.number_of_plants) || 0,
+      plantation_year: Number(form.plantation_year) || null,
+      organic_materials: JSON.stringify(form.organic_materials || []),
+    };
+    
+    // ... rest of your code
 
       let response;
       if (editingId) {
