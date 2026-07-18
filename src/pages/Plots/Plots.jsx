@@ -331,28 +331,29 @@ export default function Plots() {
   };
 const handleSubmit = async (e) => {
   e.preventDefault();
-  
-  // 1. Validate before even creating the payload
-  if (!form.customer_id || form.customer_id === "" || form.customer_id === "Select a Farmer") {
-    return alert("Please select a valid farmer.");
+
+  // 1. Create a copy of the form to avoid mutating state
+  const payload = { ...form };
+
+  // 2. FORCE VALIDATION: If customer_id is not a valid UUID format (36 chars), remove it or set to null
+  // A standard UUID looks like: 123e4567-e89b-12d3-a456-426614174000
+  if (!payload.customer_id || payload.customer_id.length < 30) {
+    console.warn("Invalid Customer ID detected, forcing to null.");
+    payload.customer_id = null; // Send null instead of ""
+  }
+
+  // 3. Process numbers and JSON
+  payload.area = Number(payload.area) || 0;
+  payload.number_of_plants = Number(payload.number_of_plants) || 0;
+  payload.plantation_year = Number(payload.plantation_year) || null;
+  payload.organic_materials = JSON.stringify(payload.organic_materials || []);
+
+  // 4. Final safety check: if customer_id is null, STOP here
+  if (!payload.customer_id) {
+    return alert("Please select a valid farmer from the list before saving.");
   }
 
   try {
-    // 2. Build the payload and force customer_id to null if it's not a real ID
-    const payload = {
-      ...form,
-      customer_id: (form.customer_id && form.customer_id.length > 20) ? form.customer_id : null,
-      area: Number(form.area) || 0,
-      number_of_plants: Number(form.number_of_plants) || 0,
-      plantation_year: Number(form.plantation_year) || null,
-      organic_materials: JSON.stringify(form.organic_materials || []),
-    };
-
-    // 3. Final safety check: if customer_id is still null, do NOT send the insert request
-    if (!payload.customer_id) {
-       return alert("Error: Invalid Farmer ID. Please select the farmer again from the list.");
-    }
-
     let response;
     if (editingId) {
       response = await db.update("plots", editingId, payload);
@@ -361,8 +362,7 @@ const handleSubmit = async (e) => {
     }
 
     if (response && response.error) {
-      console.error("Supabase Save Error:", response.error);
-      alert(`Failed to save: ${response.error.message}`);
+      alert(`Database Error: ${response.error.message}`);
       return;
     }
 
@@ -371,11 +371,9 @@ const handleSubmit = async (e) => {
     setEditingId(null);
     fetchData();
   } catch (err) {
-    console.error("Catch Block Error:", err);
-    alert("Error saving plot: " + err.message);
+    alert("Application Error: " + err.message);
   }
 };
-
   const handleEdit = (plot) => {
     setEditingId(plot.id);
     setForm({
