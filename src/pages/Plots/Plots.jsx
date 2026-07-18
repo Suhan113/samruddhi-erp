@@ -332,30 +332,20 @@ export default function Plots() {
 const handleSubmit = async (e) => {
   e.preventDefault();
 
-  // Create a fresh payload
+  // 1. Check if the ID is missing or empty
+  if (!form.customer_id || form.customer_id.trim() === "") {
+    return alert("Please select a valid farmer from the dropdown menu.");
+  }
+
   const payload = { ...form };
-
-  // 1. HARD FORCED UUID CHECK
-  // If it's not a string of at least 30 chars, it is NOT a UUID. Force null.
-  if (typeof payload.customer_id !== 'string' || payload.customer_id.length < 30) {
-    payload.customer_id = null;
-  }
-
-  // 2. Validate
-  if (!payload.customer_id) {
-    return alert("Error: Please select a valid farmer from the list.");
-  }
-
-  // 3. Clean numeric fields
+  
+  // 2. Process other fields...
   payload.area = Number(payload.area) || 0;
   payload.number_of_plants = Number(payload.number_of_plants) || 0;
-  payload.plantation_year = Number(payload.plantation_year) || null;
-  payload.organic_materials = JSON.stringify(payload.organic_materials || []);
+  // ... rest of your processing
 
   try {
-    // Log exactly what is being sent right before the call
-    console.log("PAYLOAD BEING SENT:", payload);
-
+    // 3. Now it is safe to insert because we know customer_id is a valid selection
     let response;
     if (editingId) {
       response = await db.update("plots", editingId, payload);
