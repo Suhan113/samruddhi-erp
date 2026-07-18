@@ -331,47 +331,50 @@ export default function Plots() {
   };
 const handleSubmit = async (e) => {
   e.preventDefault();
-  console.log("Submitting form data. Customer ID is:", form.customer_id);
-
+  
+  // 1. Validate before even creating the payload
   if (!form.customer_id || form.customer_id === "" || form.customer_id === "Select a Farmer") {
     return alert("Please select a valid farmer.");
   }
+
   try {
-  const payload = {
-  ...form,
-  // Update this specific line to force empty IDs to null
-  customer_id: (form.customer_id && form.customer_id.length > 20) ? form.customer_id : null,
-  area: Number(form.area) || 0,
-  number_of_plants: Number(form.number_of_plants) || 0,
-  plantation_year: Number(form.plantation_year) || null,
-  organic_materials: JSON.stringify(form.organic_materials || []),
-};
-    // ... rest of your code
+    // 2. Build the payload and force customer_id to null if it's not a real ID
+    const payload = {
+      ...form,
+      customer_id: (form.customer_id && form.customer_id.length > 20) ? form.customer_id : null,
+      area: Number(form.area) || 0,
+      number_of_plants: Number(form.number_of_plants) || 0,
+      plantation_year: Number(form.plantation_year) || null,
+      organic_materials: JSON.stringify(form.organic_materials || []),
+    };
 
-      let response;
-      if (editingId) {
-        response = await db.update("plots", editingId, payload);
-      } else {
-        response = await db.insert("plots", payload);
-      }
-
-      // --- ADD THIS LOGIC ---
-      if (response && response.error) {
-        console.error("Supabase Save Error:", response.error);
-        alert(`Failed to save: ${response.error.message}`);
-        return; // Stop here so the modal doesn't close
-      }
-      // ----------------------
-
-      setShowModal(false);
-      setForm(INITIAL_FORM);
-      setEditingId(null);
-      fetchData();
-    } catch (err) {
-      console.error("Catch Block Error:", err);
-      alert("Error saving plot: " + err.message);
+    // 3. Final safety check: if customer_id is still null, do NOT send the insert request
+    if (!payload.customer_id) {
+       return alert("Error: Invalid Farmer ID. Please select the farmer again from the list.");
     }
-  };
+
+    let response;
+    if (editingId) {
+      response = await db.update("plots", editingId, payload);
+    } else {
+      response = await db.insert("plots", payload);
+    }
+
+    if (response && response.error) {
+      console.error("Supabase Save Error:", response.error);
+      alert(`Failed to save: ${response.error.message}`);
+      return;
+    }
+
+    setShowModal(false);
+    setForm(INITIAL_FORM);
+    setEditingId(null);
+    fetchData();
+  } catch (err) {
+    console.error("Catch Block Error:", err);
+    alert("Error saving plot: " + err.message);
+  }
+};
 
   const handleEdit = (plot) => {
     setEditingId(plot.id);
