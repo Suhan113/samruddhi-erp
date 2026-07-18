@@ -331,12 +331,11 @@ export default function Plots() {
   };
 const handleSubmit = async (e) => {
   e.preventDefault();
-  
-  // 1. Ensure it's not empty, null, or a placeholder string
+  console.log("Submitting form data. Customer ID is:", form.customer_id);
+
   if (!form.customer_id || form.customer_id === "" || form.customer_id === "Select a Farmer") {
     return alert("Please select a valid farmer.");
   }
-    
   try {
     const payload = {
       ...form,
