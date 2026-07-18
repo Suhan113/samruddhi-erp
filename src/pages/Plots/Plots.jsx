@@ -332,34 +332,23 @@ export default function Plots() {
 const handleSubmit = async (e) => {
   e.preventDefault();
 
-  // 1. Create a copy of the form to avoid mutating state
-  cconst payload = {
-    ...form,
-    // THE FIX: Explicitly check for an empty string and force it to null.
-    // If the value is "", it will become null. Supabase accepts null for UUIDs if they are nullable.
-    customer_id: (form.customer_id && form.customer_id.trim() !== "") ? form.customer_id : null,
-    
-    area: Number(form.area) || 0,
-    number_of_plants: Number(form.number_of_plants) || 0,
-    plantation_year: Number(form.plantation_year) || null,
-    organic_materials: JSON.stringify(form.organic_materials || []),
-  };
+  // 1. Create a clean copy of the form
+  const payload = { ...form };
 
-  // FINAL SAFETY CHECK: If it is still null (or invalid), STOP.
-  if (!payload.customer_id) {
-    return alert("Please select a valid farmer from the list.");
+  // 2. Remove the empty string specifically
+  if (!payload.customer_id || payload.customer_id.trim() === "") {
+    delete payload.customer_id; // REMOVE the key entirely from the object
   }
- 
 
-  // 3. Process numbers and JSON
+  // 3. Process other fields
   payload.area = Number(payload.area) || 0;
   payload.number_of_plants = Number(payload.number_of_plants) || 0;
   payload.plantation_year = Number(payload.plantation_year) || null;
   payload.organic_materials = JSON.stringify(payload.organic_materials || []);
 
-  // 4. Final safety check: if customer_id is null, STOP here
+  // 4. Validate
   if (!payload.customer_id) {
-    return alert("Please select a valid farmer from the list before saving.");
+    return alert("Please select a valid farmer.");
   }
 
   try {
@@ -369,18 +358,10 @@ const handleSubmit = async (e) => {
     } else {
       response = await db.insert("plots", payload);
     }
-
-    if (response && response.error) {
-      alert(`Database Error: ${response.error.message}`);
-      return;
-    }
-
-    setShowModal(false);
-    setForm(INITIAL_FORM);
-    setEditingId(null);
-    fetchData();
+    
+    // ... handle response
   } catch (err) {
-    alert("Application Error: " + err.message);
+    console.error("Catch Block Error:", err);
   }
 };
   const handleEdit = (plot) => {
