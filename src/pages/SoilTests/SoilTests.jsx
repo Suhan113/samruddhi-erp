@@ -146,24 +146,31 @@ export default function SoilTests() {
     }
 
     try {
-      const payload = {
-        ...form,
-        ph: form.ph ? Number(form.ph) : null,
-        ec: form.ec ? Number(form.ec) : null,
-        organic_carbon: form.organic_carbon ? Number(form.organic_carbon) : null,
-        nitrogen: form.nitrogen ? Number(form.nitrogen) : null,
-        phosphorus: form.phosphorus ? Number(form.phosphorus) : null,
-        potassium: form.potassium ? Number(form.potassium) : null,
-        sulphur: form.sulphur ? Number(form.sulphur) : null,
-        calcium: form.calcium ? Number(form.calcium) : null,
-        magnesium: form.magnesium ? Number(form.magnesium) : null,
-        zinc: form.zinc ? Number(form.zinc) : null,
-        boron: form.boron ? Number(form.boron) : null,
-        iron: form.iron ? Number(form.iron) : null,
-        manganese: form.manganese ? Number(form.manganese) : null,
-        copper: form.copper ? Number(form.copper) : null,
-      };
+      const { customer_id, ...rest } = form;
 
+const payload = {
+  ...rest,
+
+  sample_collection_date: form.sample_collection_date || null,
+  report_date: form.report_date || null,
+
+  ph: form.ph ? Number(form.ph) : null,
+  ec: form.ec ? Number(form.ec) : null,
+  organic_carbon: form.organic_carbon ? Number(form.organic_carbon) : null,
+  nitrogen: form.nitrogen ? Number(form.nitrogen) : null,
+  phosphorus: form.phosphorus ? Number(form.phosphorus) : null,
+  potassium: form.potassium ? Number(form.potassium) : null,
+  sulphur: form.sulphur ? Number(form.sulphur) : null,
+  calcium: form.calcium ? Number(form.calcium) : null,
+  magnesium: form.magnesium ? Number(form.magnesium) : null,
+  zinc: form.zinc ? Number(form.zinc) : null,
+  boron: form.boron ? Number(form.boron) : null,
+  iron: form.iron ? Number(form.iron) : null,
+  manganese: form.manganese ? Number(form.manganese) : null,
+  copper: form.copper ? Number(form.copper) : null,
+};
+
+console.log(payload);
       if (editingId) {
         await db.update("soil_tests", editingId, payload);
       } else {
