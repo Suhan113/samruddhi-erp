@@ -1926,21 +1926,19 @@ function PlotFormModal({
           {formTab === "basic" && (
             <div style={S.formGrid}>
               <div style={{ gridColumn: "1 / -1" }}>
-                <label className="form-label">Farmer / Customer *</label>
-              <select 
+               <label className="form-label">Farmer / Customer *</label>
+
+<select
   className="form-input"
-  value={form.assigned_employee_id ?? ""}
-  onChange={e =>
-    setForm(f => ({
-      ...f,
-      assigned_employee_id: e.target.value || null
-    }))
-  }
+  value={form.customer_id}
+  onChange={e => handleFarmerChange(e.target.value)}
+  required
 >
-  <option value="">— Choose Staff —</option>
-  {employees.map(emp => (
-    <option key={emp.id} value={emp.id}>
-      {emp.name}
+  <option value="">— Select Customer —</option>
+
+  {customers.map(customer => (
+    <option key={customer.id} value={customer.id}>
+      {customer.name}
     </option>
   ))}
 </select>
