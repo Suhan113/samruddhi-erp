@@ -79,7 +79,24 @@ export const localStorageDb = {
       return Object.keys(filterObj).every(key => item[key] === filterObj[key]);
     });
   },
+deleteWhere(table, filterObj) {
+  initLocalStorageDb();
 
+  const items = this.select(table);
+
+  const filteredItems = items.filter(item => {
+    return !Object.keys(filterObj).every(
+      key => item[key] === filterObj[key]
+    );
+  });
+
+  localStorage.setItem(
+    STORAGE_PREFIX + table,
+    JSON.stringify(filteredItems)
+  );
+
+  return true;
+},
   // Insert a new row
   insert(table, itemData) {
     initLocalStorageDb();
