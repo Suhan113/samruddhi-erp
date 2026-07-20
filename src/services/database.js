@@ -166,7 +166,26 @@ export const db = {
       return items;
     }
   },
+async deleteWhere(table, filterObj) {
+  if (this.isSupabase()) {
+    let query = supabase.from(table).delete();
 
+    Object.keys(filterObj).forEach(key => {
+      query = query.eq(key, filterObj[key]);
+    });
+
+    const { error } = await query;
+
+    if (error) {
+      console.error(`Supabase error deleting from ${table}:`, error);
+      throw error;
+    }
+
+    return true;
+  } else {
+    return localStorageDb.deleteWhere(table, filterObj);
+  }
+},
  async insert(table, itemData) {
   if (this.isSupabase()) {
 
