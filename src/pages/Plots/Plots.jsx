@@ -60,7 +60,7 @@ const INITIAL_FORM = {
   organic_materials: [],
   special_instructions: "",
   remarks: "",
-  assigned_employee_id: "",
+  assigned_employee_id: null,
   status: "Active"
 };
 
