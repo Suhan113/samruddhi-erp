@@ -107,9 +107,17 @@ export default function SoilTests() {
 
   // Filtered plots based on selected customer inside the Form
   const formFilteredPlots = useMemo(() => {
-    if (!form.customer_id) return [];
-    return plots.filter(p => p.customer_id === form.customer_id);
-  }, [form.customer_id, plots]);
+  console.log("Selected Customer:", form.customer_id);
+  console.log("All Plots:", plots);
+
+  const filtered = plots.filter(
+    p => p.customer_id === form.customer_id
+  );
+
+  console.log("Filtered Plots:", filtered);
+
+  return filtered;
+}, [form.customer_id, plots]);
 
   // Filtered soil reports
   const filteredTests = useMemo(() => {
