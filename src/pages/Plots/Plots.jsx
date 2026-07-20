@@ -348,6 +348,11 @@ const handleSubmit = async (e) => {
   payload.number_of_plants = Number(payload.number_of_plants) || 0;
   payload.plantation_year = Number(payload.plantation_year) || null;
   payload.organic_materials = JSON.stringify(payload.organic_materials || []);
+if (payload.assigned_employee_id === "") {
+    payload.assigned_employee_id = null;
+}
+
+console.log("Payload:", payload);
 
   try {
      console.log("Payload:", payload);
