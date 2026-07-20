@@ -170,12 +170,8 @@ export const db = {
  async insert(table, itemData) {
   if (this.isSupabase()) {
 
-    // Fix empty UUID values
-    if (itemData.assigned_employee_id === "") {
-      itemData.assigned_employee_id = null;
-    }
-
-    console.log("Final Insert Data:", itemData);
+    console.log("INSERT DATA");
+    console.log(JSON.stringify(itemData, null, 2));
 
     const { data, error } = await supabase
       .from(table)
@@ -184,7 +180,7 @@ export const db = {
       .single();
 
     if (error) {
-      console.error(`Supabase error inserting into ${table}:`, error);
+      console.error(error);
       throw error;
     }
 
@@ -193,7 +189,6 @@ export const db = {
     return localStorageDb.insert(table, itemData);
   }
 },
-
   async update(table, id, updatedData) {
     if (this.isSupabase()) {
       const { data, error } = await supabase.from(table).update(updatedData).eq("id", id).select().single();
