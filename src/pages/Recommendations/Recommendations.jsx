@@ -217,19 +217,28 @@ export default function Recommendations() {
 
   // Delete prescription
   const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this recommendation? This will also remove the 4 generated doses.")) {
-      try {
-        await db.delete("recommendations", id);
-        if (selectedRec?.id === id) {
-          setSelectedRec(null);
-        }
-        fetchData();
-      } catch (err) {
-        console.error(err);
-        alert("Failed to delete recommendation.");
-      }
-    }
-  };
+  if (!window.confirm("Delete this recommendation?")) return;
+
+  try {
+    // Delete recommendation materials first
+    await db.deleteWhere("recommendation_materials", {
+      recommendation_id: id,
+    });
+
+    // Delete dose records
+    await db.deleteWhere("dose_records", {
+      recommendation_id: id,
+    });
+
+    // Finally delete recommendation
+    await db.delete("recommendations", id);
+
+    fetchData();
+  } catch (err) {
+    console.error(err);
+    alert("Failed to delete recommendation.");
+  }
+};
 
   return (
     <div style={containerStyle}>
