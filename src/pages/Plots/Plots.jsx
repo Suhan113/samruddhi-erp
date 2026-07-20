@@ -350,6 +350,7 @@ const handleSubmit = async (e) => {
   payload.organic_materials = JSON.stringify(payload.organic_materials || []);
 
   try {
+     console.log("Payload:", payload);
     let response;
     if (editingId) {
       response = await db.update("plots", editingId, payload);
