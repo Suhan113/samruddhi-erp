@@ -349,13 +349,13 @@ const handleSubmit = async (e) => {
   payload.plantation_year = Number(payload.plantation_year) || null;
 payload.organic_materials = JSON.stringify(payload.organic_materials || []);
 
-Object.keys(payload).forEach(key => {
-  if (payload[key] === "") {
-    payload[key] = null;
-  }
-});
+payload.assigned_employee_id =
+  payload.assigned_employee_id || null;
 
-console.log("Payload:", payload);
+payload.customer_id =
+  payload.customer_id || null;
+
+console.log(payload);
 
   try {
      console.log("Payload:", payload);
