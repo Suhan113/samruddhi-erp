@@ -347,10 +347,13 @@ const handleSubmit = async (e) => {
   payload.area = Number(payload.area) || 0;
   payload.number_of_plants = Number(payload.number_of_plants) || 0;
   payload.plantation_year = Number(payload.plantation_year) || null;
-  payload.organic_materials = JSON.stringify(payload.organic_materials || []);
-if (payload.assigned_employee_id === "") {
-    payload.assigned_employee_id = null;
-}
+payload.organic_materials = JSON.stringify(payload.organic_materials || []);
+
+Object.keys(payload).forEach(key => {
+  if (payload[key] === "") {
+    payload[key] = null;
+  }
+});
 
 console.log("Payload:", payload);
 
