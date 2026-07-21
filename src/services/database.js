@@ -186,11 +186,13 @@ async deleteWhere(table, filterObj) {
     return localStorageDb.deleteWhere(table, filterObj);
   }
 },
- async insert(table, itemData) {
+async insert(table, itemData) {
   if (this.isSupabase()) {
 
-    console.log("INSERT DATA");
-    console.log(JSON.stringify(itemData, null, 2));
+    console.log("TABLE:", table);
+    console.log("ITEM DATA:", itemData);
+    console.log("SUPPLIER ID =", itemData.supplier_id);
+    console.log("TYPE =", typeof itemData.supplier_id);
 
     const { data, error } = await supabase
       .from(table)
