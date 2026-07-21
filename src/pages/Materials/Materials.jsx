@@ -16,7 +16,7 @@ const initialForm = {
   stock: 0,
   purchase_rate: "",
   selling_rate: "",
-  supplier_id: "",
+  supplier_id: null,
   remarks: ""
 };
 
