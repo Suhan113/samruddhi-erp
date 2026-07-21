@@ -54,10 +54,13 @@ export default function Reports() {
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const [custs, reports] = await Promise.all([
-        db.select("customers"),
-        db.select("uploaded_reports")
-      ]);
+      const custs = await db.select("customers");
+console.log("CUSTOMERS:", custs);
+
+const reports = await db.select("uploaded_reports");
+
+setCustomers(custs);
+setUploadedReports(reports);
       setCustomers(custs || []);
       setUploadedReports(reports || []);
     } catch (err) {
