@@ -307,11 +307,16 @@ export default function Materials() {
 
                 <div>
                   <label className="form-label">Suggested Supplier</label>
-                  <select 
-                    className="form-input"
-                    value={form.supplier_id}
-                    onChange={(e) => setForm({ ...form, supplier_id: e.target.value })}
-                  >
+               <select
+  className="form-input"
+  value={form.supplier_id ?? ""}
+  onChange={(e) =>
+    setForm({
+      ...form,
+      supplier_id: e.target.value || null,
+    })
+  }
+>
                     <option value="">-- Choose supplier --</option>
                     {suppliers.map(s => (
                       <option key={s.id} value={s.id}>{s.name}</option>
