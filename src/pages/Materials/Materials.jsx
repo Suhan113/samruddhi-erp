@@ -69,12 +69,13 @@ export default function Materials() {
     e.preventDefault();
     try {
       const payload = {
-        ...form,
-        stock: Number(form.stock),
-        purchase_rate: Number(form.purchase_rate),
-        selling_rate: Number(form.selling_rate)
-      };
+  ...form,
+  stock: Number(form.stock),
+  purchase_rate: Number(form.purchase_rate),
+  selling_rate: Number(form.selling_rate),
 
+  supplier_id: form.supplier_id || null,
+};
       if (editingId) {
         await db.update("materials", editingId, payload);
       } else {
