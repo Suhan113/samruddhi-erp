@@ -102,7 +102,7 @@ export default function Materials() {
       stock: mat.stock || 0,
       purchase_rate: mat.purchase_rate || "",
       selling_rate: mat.selling_rate || "",
-      supplier_id: mat.supplier_id || "",
+      supplier_id: mat.supplier_id || null,
       remarks: mat.remarks || ""
     });
     setShowModal(true);
