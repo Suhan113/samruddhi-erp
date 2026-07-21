@@ -208,18 +208,31 @@ async deleteWhere(table, filterObj) {
     return localStorageDb.insert(table, itemData);
   }
 },
-  async update(table, id, updatedData) {
-    if (this.isSupabase()) {
-      const { data, error } = await supabase.from(table).update(updatedData).eq("id", id).select().single();
-      if (error) {
-        console.error(`Supabase error updating ${table} ID ${id}:`, error);
-        throw error;
-      }
-      return data;
-    } else {
-      return localStorageDb.update(table, id, updatedData);
+async update(table, id, updatedData) {
+  if (this.isSupabase()) {
+
+    console.log("UPDATE TABLE:", table);
+    console.log("UPDATE ID:", id);
+    console.log("UPDATE DATA:");
+    console.log(JSON.stringify(updatedData, null, 2));
+
+    const { data, error } = await supabase
+      .from(table)
+      .update(updatedData)
+      .eq("id", id)
+      .select()
+      .single();
+
+    if (error) {
+      console.error(error);
+      throw error;
     }
-  },
+
+    return data;
+  } else {
+    return localStorageDb.update(table, id, updatedData);
+  }
+},
 
   async delete(table, id) {
     if (this.isSupabase()) {
