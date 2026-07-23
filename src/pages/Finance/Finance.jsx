@@ -269,7 +269,7 @@ export default function Finance() {
                         <td><strong>{e.category}</strong></td>
                         <td style={{ fontWeight: 700, color: "red" }}>₹{e.amount.toLocaleString("en-IN")}</td>
                         <td>{e.description || "—"}</td>
-                        <td style={{ textAlign: "right" }}><button type="button" style={{ background: "none", border: "none", color: "red", cursor: "pointer" }} onClick={() => handleDeleteTransaction("expenses", p.id)}><RiDeleteBinLine /></button></td>
+                        <td style={{ textAlign: "right" }}><button type="button" style={{ background: "none", border: "none", color: "red", cursor: "pointer" }} onClick={() => handleDeleteTransaction("expenses", e.id)}><RiDeleteBinLine /></button></td>
                       </tr>
                     ))}
                   </tbody>
