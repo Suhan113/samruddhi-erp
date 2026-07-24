@@ -13,21 +13,20 @@
   --accent-light:   #fef3c7;
 
   /* Executive Light Theme Backgrounds */
-  --bg-app:      #f8fafc;  /* Clean neutral slate background */
-  --bg-card:     #ffffff;  /* Pure white structural cards */
-  --bg-sidebar: #0f172a;  /* Real commercial Midnight Slate-Charcoal (Replaces raw AI green) */
+  --bg-app:       #f8fafc;  /* Clean neutral slate background */
+  --bg-card:      #ffffff;  /* Pure white structural cards */
+  --bg-sidebar: #0f172a;  /* Real commercial Midnight Slate-Charcoal */
   --bg-header:  rgba(255, 255, 255, 0.95);
-  --border:      #e2e8f0;  /* Subtle industrial border */
+  --border:       #e2e8f0;  /* Subtle industrial border */
 
   /* Text */
   --text-main:  #1e293b;  /* Crisp dark slate text */
   --text-muted: #64748b;  /* Balanced professional gray */
   --text-white: #ffffff;
 
-  /* Rest of your tokens remain unchanged */
-  --shadow-sm:       0 1px 3px rgba(0,0,0,0.06);
-  --shadow-md:       0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -1px rgba(0,0,0,0.04);
-  --shadow-lg:       0 10px 15px -3px rgba(0,0,0,0.08);
+  --shadow-sm:        0 1px 3px rgba(0,0,0,0.06);
+  --shadow-md:        0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -1px rgba(0,0,0,0.04);
+  --shadow-lg:        0 10px 15px -3px rgba(0,0,0,0.08);
   --shadow-premium: 0 4px 20px rgba(15,23,42,0.05);
 
   --glass-bg:       rgba(255,255,255,0.85);
@@ -46,6 +45,7 @@
   --transition-fast:   0.15s ease;
   --transition-normal: 0.22s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
 /* ============================================================
    RESET & BASE
    ============================================================ */
@@ -128,7 +128,7 @@ a { text-decoration: none; color: inherit; }
    ============================================================ */
 .top-navbar, .row-navbar {
   width: 100%;
-  background: var(--bg-sidebar);
+  background: rgba(255, 255, 255, 0.25);
   display: flex;
   flex-direction: column;
   position: fixed;
@@ -136,7 +136,7 @@ a { text-decoration: none; color: inherit; }
   left: 0;
   right: 0;
   z-index: 1000;
-  box-shadow: 0 2px 20px rgba(6,78,59,0.3);
+  box-shadow: 0 2px 20px rgba(0,0,0,0.05);
   flex-shrink: 0;
 }
 
@@ -146,7 +146,7 @@ a { text-decoration: none; color: inherit; }
   align-items: center;
   gap: 16px;
   padding: 10px 24px;
-  border-bottom: 1px solid rgba(255,255,255,0.07);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
 }
 
 /* Brand */
@@ -165,7 +165,7 @@ a { text-decoration: none; color: inherit; }
   border-radius: 8px;
   background: #000;
   padding: 2px;
-  border: 1px solid rgba(255,255,255,0.15);
+  border: 1px solid rgba(0,0,0,0.15);
 }
 
 .top-navbar-title {
@@ -177,7 +177,7 @@ a { text-decoration: none; color: inherit; }
 .top-navbar-title h2 {
   font-size: 13.5px;
   font-weight: 700;
-  color: #fff;
+  color: #000000;
   font-family: var(--font-title);
   line-height: 1.2;
 }
@@ -202,7 +202,7 @@ a { text-decoration: none; color: inherit; }
 .top-navbar-search svg {
   position: absolute;
   left: 12px;
-  color: rgba(255,255,255,0.4);
+  color: rgba(0,0,0,0.5);
   pointer-events: none;
   flex-shrink: 0;
 }
@@ -210,20 +210,20 @@ a { text-decoration: none; color: inherit; }
 .top-navbar-search input {
   width: 100%;
   padding: 8px 14px 8px 36px;
-  background: rgba(255,255,255,0.07);
-  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(0,0,0,0.05);
+  border: 1px solid rgba(0,0,0,0.15);
   border-radius: var(--radius-full);
-  color: #fff;
+  color: #000000;
   font-size: 12.5px;
   font-family: var(--font-body);
   outline: none;
   transition: border-color var(--transition-fast), background var(--transition-fast);
 }
 
-.top-navbar-search input::placeholder { color: rgba(255,255,255,0.35); }
+.top-navbar-search input::placeholder { color: rgba(0,0,0,0.4); }
 .top-navbar-search input:focus {
   border-color: var(--primary);
-  background: rgba(16,185,129,0.08);
+  background: rgba(5,150,105,0.05);
 }
 
 /* Right actions */
@@ -238,11 +238,11 @@ a { text-decoration: none; color: inherit; }
 .top-navbar-date {
   font-size: 11px;
   font-weight: 600;
-  color: rgba(255,255,255,0.5);
-  background: rgba(255,255,255,0.05);
+  color: #000000;
+  background: rgba(0,0,0,0.05);
   padding: 5px 10px;
   border-radius: var(--radius-md);
-  border: 1px solid rgba(255,255,255,0.07);
+  border: 1px solid rgba(0,0,0,0.1);
   white-space: nowrap;
 }
 
@@ -251,17 +251,17 @@ a { text-decoration: none; color: inherit; }
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  background: rgba(255,255,255,0.07);
-  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(0,0,0,0.05);
+  border: 1px solid rgba(0,0,0,0.1);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: rgba(255,255,255,0.8);
+  color: #000000;
   transition: background var(--transition-fast);
   flex-shrink: 0;
 }
-.top-navbar-notif:hover { background: rgba(255,255,255,0.13); }
+.top-navbar-notif:hover { background: rgba(0,0,0,0.1); }
 
 .top-navbar-notif-dot {
   position: absolute;
@@ -277,7 +277,7 @@ a { text-decoration: none; color: inherit; }
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px solid var(--bg-sidebar);
+  border: 2px solid #ffffff;
 }
 
 .top-navbar-profile {
@@ -285,19 +285,19 @@ a { text-decoration: none; color: inherit; }
   align-items: center;
   gap: 8px;
   padding-left: 12px;
-  border-left: 1px solid rgba(255,255,255,0.1);
+  border-left: 1px solid rgba(0,0,0,0.1);
 }
 
 .top-navbar-avatar {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: var(--primary-light);
+  background: rgba(0,0,0,0.06);
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px solid rgba(16,185,129,0.3);
-  color: var(--primary-dark);
+  border: 2px solid rgba(0,0,0,0.15);
+  color: #000000;
   flex-shrink: 0;
 }
 
@@ -305,12 +305,12 @@ a { text-decoration: none; color: inherit; }
 .top-navbar-userinfo .name {
   font-size: 12px;
   font-weight: 600;
-  color: #fff;
+  color: #000000;
   line-height: 1.2;
 }
 .top-navbar-userinfo .role {
   font-size: 10px;
-  color: rgba(255,255,255,0.45);
+  color: #64748b;
 }
 
 .top-navbar-logout {
@@ -318,9 +318,9 @@ a { text-decoration: none; color: inherit; }
   align-items: center;
   gap: 5px;
   background: transparent;
-  border: 1px solid rgba(239,68,68,0.3);
+  border: 1px solid rgba(239,68,68,0.4);
   border-radius: var(--radius-md);
-  color: #fca5a5;
+  color: #dc2626;
   padding: 6px 12px;
   cursor: pointer;
   font-size: 11px;
@@ -330,9 +330,9 @@ a { text-decoration: none; color: inherit; }
   flex-shrink: 0;
 }
 .top-navbar-logout:hover {
-  background: rgba(239,68,68,0.12);
-  border-color: rgba(239,68,68,0.6);
-  color: #fff;
+  background: rgba(239,68,68,0.1);
+  border-color: rgba(239,68,68,0.8);
+  color: #991b1b;
 }
 
 /* Row 2 — Desktop Nav */
@@ -353,42 +353,42 @@ a { text-decoration: none; color: inherit; }
   padding: 10px 12px;
   text-decoration: none;
   font-size: 12px;
-  font-weight: 500;
-  color: rgba(167,243,208,0.7);
+  font-weight: 600;
+  color: #000000;
   border-bottom: 2px solid transparent;
   white-space: nowrap;
   transition: color var(--transition-fast), background var(--transition-fast), border-color var(--transition-fast);
   border-radius: var(--radius-sm) var(--radius-sm) 0 0;
 }
 .top-nav-link:hover {
-  color: #fff;
-  background: rgba(255,255,255,0.05);
+  color: var(--primary);
+  background: rgba(0,0,0,0.04);
 }
 .top-nav-link.active {
-  color: #fff;
-  font-weight: 600;
+  color: var(--primary);
+  font-weight: 700;
   border-bottom-color: var(--primary);
-  background: rgba(16,185,129,0.1);
+  background: rgba(5,150,105,0.08);
 }
 
 /* ============================================================
-   HAMBURGER BUTTON (mobile only)
+   HAMBURGER BUTTON (mobile only) — BLACK LINES
    ============================================================ */
 .mobile-menu-btn {
   display: none;
   align-items: center;
   justify-content: center;
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(0,0,0,0.05);
+  border: 1px solid rgba(0,0,0,0.12);
   border-radius: var(--radius-sm);
-  color: #fff;
+  color: #000000 !important;
   width: 36px;
   height: 36px;
   cursor: pointer;
   flex-shrink: 0;
   transition: background var(--transition-fast);
 }
-.mobile-menu-btn:hover { background: rgba(255,255,255,0.15); }
+.mobile-menu-btn:hover { background: rgba(0,0,0,0.1); }
 
 /* ============================================================
    MOBILE DRAWER & BACKDROP SYSTEM
@@ -398,8 +398,10 @@ a { text-decoration: none; color: inherit; }
 .mobile-nav-drawer, .mobile-drawer {
   display: none !important;
   flex-direction: column;
-  background: var(--bg-sidebar);
-  border-top: 1px solid rgba(255,255,255,0.06);
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(0,0,0,0.08);
   position: absolute;
   top: 100%;
   left: 0;
@@ -407,7 +409,7 @@ a { text-decoration: none; color: inherit; }
   width: 100%;
   z-index: 1050 !important;
   pointer-events: auto;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
   padding: 8px 12px 16px;
 }
 
@@ -424,21 +426,21 @@ a { text-decoration: none; color: inherit; }
 .mobile-nav-search svg {
   position: absolute;
   left: 28px;
-  color: rgba(255,255,255,0.4);
+  color: rgba(0,0,0,0.4);
   pointer-events: none;
 }
 .mobile-nav-search input {
   width: 100%;
   padding: 9px 14px 9px 38px;
-  background: rgba(255,255,255,0.07);
-  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(0,0,0,0.05);
+  border: 1px solid rgba(0,0,0,0.1);
   border-radius: var(--radius-full);
-  color: #fff;
+  color: #000000;
   font-size: 13px;
   font-family: var(--font-body);
   outline: none;
 }
-.mobile-nav-search input::placeholder { color: rgba(255,255,255,0.35); }
+.mobile-nav-search input::placeholder { color: rgba(0,0,0,0.4); }
 
 .mobile-nav-links, .navbar-links-wrapper {
   display: flex;
@@ -457,19 +459,19 @@ a { text-decoration: none; color: inherit; }
   text-decoration: none;
   font-size: 13px;
   font-weight: 500;
-  color: rgba(167,243,208,0.8);
+  color: #000000;
   border-radius: 10px;
   border-left: 3px solid transparent;
   transition: all var(--transition-fast);
 }
 .mobile-nav-link:hover {
-  color: #fff;
-  background: rgba(255,255,255,0.06);
+  color: var(--primary);
+  background: rgba(0,0,0,0.04);
 }
 .mobile-nav-link.active {
-  color: #fff;
+  color: var(--primary);
   font-weight: 600;
-  background: rgba(16,185,129,0.12);
+  background: rgba(5,150,105,0.08);
   border-left-color: var(--primary);
 }
 
@@ -478,7 +480,7 @@ a { text-decoration: none; color: inherit; }
   align-items: center;
   justify-content: space-between;
   padding: 12px 16px 16px;
-  border-top: 1px solid rgba(255,255,255,0.07);
+  border-top: 1px solid rgba(0,0,0,0.08);
   margin-top: 4px;
 }
 .mobile-nav-user {
@@ -569,7 +571,7 @@ a { text-decoration: none; color: inherit; }
 }
 .form-input:focus {
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(16,185,129,0.12);
+  box-shadow: 0 0 0 3px rgba(5,150,105,0.12);
 }
 .form-input::placeholder { color: #b0bec5; }
 
@@ -602,11 +604,11 @@ textarea.form-input { resize: vertical; min-height: 90px; }
 .btn-primary {
   background: linear-gradient(135deg, var(--primary), var(--primary-hover));
   color: #fff;
-  box-shadow: 0 4px 12px rgba(16,185,129,0.25);
+  box-shadow: 0 4px 12px rgba(5,150,105,0.25);
 }
 .btn-primary:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(16,185,129,0.35);
+  box-shadow: 0 6px 18px rgba(5,150,105,0.35);
 }
 .btn-primary:active { transform: translateY(0); }
 
@@ -713,7 +715,7 @@ textarea.form-input { resize: vertical; min-height: 90px; }
 .premium-table tbody tr {
   transition: background var(--transition-fast);
 }
-.premium-table tbody tr:hover { background: rgba(16,185,129,0.03); }
+.premium-table tbody tr:hover { background: rgba(5,150,105,0.03); }
 .premium-table tbody tr:last-child td { border-bottom: none; }
 
 /* ============================================================
@@ -801,8 +803,6 @@ textarea.form-input { resize: vertical; min-height: 90px; }
   .page-header  { margin-bottom: 16px; }
   .page-title   { font-size: 18px; }
 
-  /* COMPREHENSIVE FIX: DISABLE UNSTRUCTURED INLINE GRID CRUSHING ON MOBILE */
-  /* This prevents the side-by-side split layouts and side panels from breaking */
   div[style*="grid-template-columns: 1.6fr 1fr"],
   div[style*="gridTemplateColumns: '1.6fr 1fr'"],
   div[style*="grid-template-columns: 1fr 1fr"],
@@ -814,7 +814,6 @@ textarea.form-input { resize: vertical; min-height: 90px; }
     box-sizing: border-box !important;
   }
 
-  /* FORCE SIDE PANELS AND DETAIL DRAWERS TO STACK NATURALLY BELOW TABLES */
   div[style*="position: sticky"],
   div[style*="position:sticky"],
   div[style*="position: fixed"],
@@ -831,7 +830,6 @@ textarea.form-input { resize: vertical; min-height: 90px; }
     z-index: 10 !important;
   }
 
-  /* FORCE DOSE PLANNER & FORM MATRICES TO STACK FLUIDLY */
   .dose-planner-container,
   div[style*="flex-direction: row"],
   div[style*="display: flex"] {
@@ -840,7 +838,6 @@ textarea.form-input { resize: vertical; min-height: 90px; }
     width: 100% !important;
   }
 
-  /* STAT CARDS, INPUTS, TABLES, AND FORM FIELDS FILL 100% WIDTH CLEANLY */
   .stat-card,
   .card-premium,
   .form-input, 
@@ -851,14 +848,12 @@ textarea.form-input { resize: vertical; min-height: 90px; }
     box-sizing: border-box !important;
   }
 
-  /* FULL-WIDTH BUTTON OVERRIDES FOR MOBILE */
   .btn-primary, .btn-secondary, .btn-danger, .btn-ghost { 
     width: 100% !important; 
     justify-content: center !important; 
     white-space: normal !important;
   }
 
-  /* HORIZONTAL TABS AUTO-SCROLL FIX */
   div[role="tablist"],
   .tab-container,
   div[style*="border-bottom"] {
@@ -881,6 +876,10 @@ textarea.form-input { resize: vertical; min-height: 90px; }
   .top-navbar-notif      { width: 30px; height: 30px; }
   .page-title            { font-size: 16px; }
 }
+
+/* ============================================================
+   SEARCH FIELD ALIGNMENT
+   ============================================================ */
 .search-wrapper,
 div[style*="position: relative"] {
   position: relative;
@@ -889,21 +888,19 @@ div[style*="position: relative"] {
   width: 100%;
 }
 
-/* Properly center the search icon vertically */
 .search-wrapper svg,
 div[style*="position: relative"] svg {
   position: absolute;
   left: 14px;
   top: 50%;
   transform: translateY(-50%);
-  color: var(--text-muted);
+  color: rgba(0,0,0,0.5);
   pointer-events: none;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* Ensure padding leaves room for the icon */
 .search-input,
 div[style*="position: relative"] input {
   width: 100%;
@@ -915,7 +912,6 @@ div[style*="position: relative"] input {
    TRANSPARENT GLASS NAVBAR WITH PITCH BLACK FONTS
    ============================================================ */
 
-/* Initial State: Elegant frosted glass with dark text */
 .top-navbar {
   background: rgba(255, 255, 255, 0.25) !important;
   backdrop-filter: blur(14px);
@@ -924,7 +920,6 @@ div[style*="position: relative"] input {
   transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Header row padding */
 .top-navbar .top-navbar-header {
   padding: 16px 24px;
   transition: padding 0.35s ease;
@@ -941,10 +936,9 @@ div[style*="position: relative"] input {
 }
 
 .top-navbar .top-navbar-title span {
-  color: #047857 !important; /* Rich green for subtext */
+  color: #047857 !important;
 }
 
-/* Search bar styling with clear dark text */
 .top-navbar .top-navbar-search input {
   color: #000000 !important;
   background: rgba(0, 0, 0, 0.05) !important;
@@ -957,7 +951,6 @@ div[style*="position: relative"] input {
   color: #000000 !important;
 }
 
-/* Icons, buttons, and avatars contrast */
 .top-navbar .top-navbar-notif,
 .top-navbar .top-navbar-avatar {
   background: rgba(0, 0, 0, 0.06);
@@ -965,31 +958,27 @@ div[style*="position: relative"] input {
   border-color: rgba(0, 0, 0, 0.12);
 }
 
-
 /* ============================================================
-   SCROLLED STATE: SHRUNK FROSTED GLASS (NO WHITE, STILL CLEAR)
+   SCROLLED STATE: SHRUNK FROSTED GLASS
    ============================================================ */
 .top-navbar.scrolled {
-  background: rgba(255, 255, 255, 0.45) !important; /* Slightly richer frosted glass, not solid white */
+  background: rgba(255, 255, 255, 0.45) !important;
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
   border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 }
 
-/* Compress header height on scroll */
 .top-navbar.scrolled .top-navbar-header {
   padding: 8px 24px;
 }
 
-/* Shrink logo on scroll */
 .top-navbar.scrolled .top-navbar-brand img {
   height: 34px;
   width: 34px;
   transition: all 0.35s ease;
 }
 
-/* KEEP EVERYTHING PITCH BLACK WHEN SCROLLED */
 .top-navbar.scrolled .top-navbar-title h2,
 .top-navbar.scrolled .top-navbar-date,
 .top-navbar.scrolled .top-navbar-profile .name,
