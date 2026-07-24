@@ -6,7 +6,8 @@ import {
   RiFileTextLine, RiTimeLine, RiPlantLine, RiDatabase2Line,
   RiTeamLine, RiTruckLine, RiCoinsLine, RiBarChartLine,
   RiSettings4Line, RiLogoutBoxRLine, RiUserLine,
-  RiSearchLine, RiNotification3Line, RiMenuLine, RiCloseLine
+  RiSearchLine, RiNotification3Line, RiMenuLine, RiCloseLine,
+  RiBookOpenLine
 } from "react-icons/ri";
 
 const menuItems = [
@@ -22,6 +23,7 @@ const menuItems = [
   { to: "/suppliers", label: "Suppliers", icon: RiTruckLine },
   { to: "/finance", label: "Finance", icon: RiCoinsLine },
   { to: "/reports", label: "Reports", icon: RiBarChartLine },
+  { to: "/protocol", label: "Nutrition Protocol", icon: RiBookOpenLine }, // Added here
   { to: "/settings", label: "Settings", icon: RiSettings4Line },
 ];
 
