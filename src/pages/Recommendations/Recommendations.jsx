@@ -61,12 +61,10 @@ export default function Recommendations() {
   const loadRecDetails = async (rec) => {
     setSelectedRec(rec);
     try {
-      // Fetch materials prescribed
       const allRecM = await db.select("recommendation_materials");
       const filteredRecM = allRecM.filter(m => m.recommendation_id === rec.id);
       setRecMaterials(filteredRecM);
 
-      // Fetch 4 doses generated
       const allDoses = await db.select("dose_records");
       const filteredDoses = allDoses.filter(d => d.recommendation_id === rec.id);
       setRecDoses(filteredDoses);
@@ -114,7 +112,7 @@ export default function Recommendations() {
     });
   }, [recommendations, searchTerm, testMap, plotMap, customerMap]);
 
-  // Add material row in the Form builder (Streamlined Inputs)
+  // Add material row in the Form builder
   const addMaterialRow = () => {
     setSelectedMaterialsList([
       ...selectedMaterialsList,
@@ -156,11 +154,11 @@ export default function Recommendations() {
         remarks: form.remarks
       });
 
-      // 2. Fetch linked plot plant count to compute total material needed
+      // 2. Fetch linked plot plant count
       const testObj = soilTests.find(t => t.id === form.soil_test_id);
       const plotObj = plots.find(p => p.id === testObj.plot_id);
 
-      // 3. Save prescribed materials with calculated total bulk
+      // 3. Save prescribed materials
       for (const mat of selectedMaterialsList) {
         const plantsCount = Number(mat.number_of_plants || 0);
         const dosagePerPlant = Number(mat.kg_per_plant || 0);
@@ -178,7 +176,7 @@ export default function Recommendations() {
         });
       }
 
-      // 4. Automatically generate 4 doses matching structural descriptors
+      // 4. Automatically generate 4 doses
       const materialDescriptions = selectedMaterialsList.map(item => {
         const total = Number(item.number_of_plants || 0) * Number(item.kg_per_plant || 0);
         return `${item.material_name || "Input"} (${total} Kg)`;
@@ -310,7 +308,7 @@ export default function Recommendations() {
                         <td>{plotObj.plot_number}</td>
                         <td>{rec.recommendation_date}</td>
                         <td>
-                          <span style={statusBadgeStyle("Active")}>Active (4 Doses)</span>
+                          <span style={statusBadgeStyle()}>Active (4 Doses)</span>
                         </td>
                         <td style={{ textAlign: "right" }}>
                           <div style={actionsContainerStyle}>
@@ -493,7 +491,6 @@ export default function Recommendations() {
                     <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
                       {selectedMaterialsList.map((row, idx) => (
                         <div key={idx} style={{ display: "flex", gap: "8px", alignItems: "center", flexWrap: "wrap" }}>
-                          {/* Material Name */}
                           <input
                             type="text"
                             className="form-input"
@@ -504,7 +501,6 @@ export default function Recommendations() {
                             required
                           />
 
-                          {/* Category */}
                           <select
                             className="form-input"
                             style={{ flex: "1.2", minWidth: "110px" }}
@@ -518,7 +514,6 @@ export default function Recommendations() {
                             <option value="Amendment">Amendment</option>
                           </select>
 
-                          {/* Number of Plants */}
                           <input
                             className="form-input"
                             type="number"
@@ -529,7 +524,6 @@ export default function Recommendations() {
                             required
                           />
 
-                          {/* Kg / Plant */}
                           <input
                             className="form-input"
                             type="number"
@@ -541,7 +535,6 @@ export default function Recommendations() {
                             required
                           />
 
-                          {/* Remarks */}
                           <input
                             type="text"
                             className="form-input"
@@ -551,7 +544,6 @@ export default function Recommendations() {
                             onChange={(e) => updateMaterialRow(idx, "remarks", e.target.value)}
                           />
 
-                          {/* Delete Button */}
                           <button type="button" onClick={() => removeMaterialRow(idx)} style={deleteRowBtnStyle}>
                             ✕
                           </button>
@@ -587,7 +579,7 @@ const containerStyle = {
 
 const headerStyle = {
   display: "flex",
-  justify-content: "space-between",
+  justifyContent: "space-between",
   alignItems: "center",
   flexWrap: "wrap",
   gap: "16px",
@@ -647,7 +639,7 @@ const selectedRowStyle = {
 
 const actionsContainerStyle = {
   display: "flex",
-  justify-content: "flex-end",
+  justifyContent: "flex-end",
   gap: "6px",
 };
 
@@ -659,7 +651,7 @@ const actionIconBtnStyle = {
   height: "32px",
   display: "flex",
   alignItems: "center",
-  justify-content: center",
+  justifyContent: "center",
   cursor: "pointer",
   color: "var(--text-main)",
 };
@@ -673,7 +665,6 @@ const statusBadgeStyle = () => ({
   color: "var(--primary-hover)",
 });
 
-// Detail drawer styles
 const detailPanelStyle = {
   position: "sticky",
   top: "90px",
@@ -765,7 +756,6 @@ const doseStatusBadgeStyle = (status) => {
   };
 };
 
-// Modal styles
 const modalOverlayStyle = {
   position: "fixed",
   top: 0,
@@ -830,4 +820,4 @@ const deleteRowBtnStyle = {
   alignItems: "center",
   justifyContent: "center",
   flexShrink: 0
-}; 
+};
