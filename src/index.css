@@ -4,53 +4,48 @@
    CSS DESIGN TOKENS
    ============================================================ */
 :root {
-  /* Brand Colors */
-  --primary:        #10b981;
-  --primary-hover:  #059669;
-  --primary-dark:   #064e3b;
-  --primary-light:  #ecfdf5;
-  --accent:         #f59e0b;
+  /* Real Enterprise Brand Palette */
+  --primary:        #059669;  /* Muted professional emerald */
+  --primary-hover:  #047857;  /* Deeper rich green on interaction */
+  --primary-dark:   #022c22;  /* Deep earthy forest tint */
+  --primary-light:  #f0fdf4;  /* Soft, clean organic wash */
+  --accent:         #d97706;  /* Sophisticated amber-gold */
   --accent-light:   #fef3c7;
 
-  /* Light Theme Backgrounds */
-  --bg-app:      #f1f5f4;
-  --bg-card:     #ffffff;
-  --bg-sidebar: #062f21;
-  --bg-header:  rgba(255, 255, 255, 0.92);
-  --border:      #e2e8f0;
+  /* Executive Light Theme Backgrounds */
+  --bg-app:      #f8fafc;  /* Clean neutral slate background */
+  --bg-card:     #ffffff;  /* Pure white structural cards */
+  --bg-sidebar: #0f172a;  /* Real commercial Midnight Slate-Charcoal (Replaces raw AI green) */
+  --bg-header:  rgba(255, 255, 255, 0.95);
+  --border:      #e2e8f0;  /* Subtle industrial border */
 
   /* Text */
-  --text-main:  #0f172a;
-  --text-muted: #64748b;
+  --text-main:  #1e293b;  /* Crisp dark slate text */
+  --text-muted: #64748b;  /* Balanced professional gray */
   --text-white: #ffffff;
 
-  /* Shadows */
+  /* Rest of your tokens remain unchanged */
   --shadow-sm:       0 1px 3px rgba(0,0,0,0.06);
-  --shadow-md:       0 4px 12px rgba(0,0,0,0.08);
-  --shadow-lg:       0 10px 30px rgba(0,0,0,0.10);
-  --shadow-premium: 0 20px 40px rgba(6,78,59,0.07);
+  --shadow-md:       0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -1px rgba(0,0,0,0.04);
+  --shadow-lg:       0 10px 15px -3px rgba(0,0,0,0.08);
+  --shadow-premium: 0 4px 20px rgba(15,23,42,0.05);
 
-  /* Glass */
-  --glass-bg:       rgba(255,255,255,0.75);
-  --glass-border: rgba(255,255,255,0.5);
-  --blur:           16px;
+  --glass-bg:       rgba(255,255,255,0.85);
+  --glass-border: rgba(226,232,240,0.8);
+  --blur:           12px;
 
-  /* Typography */
   --font-title: 'Outfit', sans-serif;
   --font-body:  'Plus Jakarta Sans', sans-serif;
 
-  /* Border Radius */
-  --radius-sm:   8px;
-  --radius-md:   12px;
-  --radius-lg:   18px;
-  --radius-xl:   24px;
+  --radius-sm:   6px;
+  --radius-md:   10px;
+  --radius-lg:   14px;
+  --radius-xl:   20px;
   --radius-full: 9999px;
 
-  /* Transitions */
   --transition-fast:   0.15s ease;
-  --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 0.22s cubic-bezier(0.4, 0, 0.2, 1);
 }
-
 /* ============================================================
    RESET & BASE
    ============================================================ */
