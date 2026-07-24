@@ -91,6 +91,7 @@ export default function AppRoutes() {
           <Route path="finance" element={<Finance />} />
           <Route path="reports" element={<Reports />} />
           <Route path="settings" element={<Settings />} />
+          <Route path="/protocol" element={<ProtocolGuide />} />
         </Route>
 
         {/* Fallback route */}
