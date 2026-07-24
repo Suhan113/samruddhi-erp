@@ -15,6 +15,7 @@ import {
 const initialForm = {
   soil_test_id: "",
   recommendation_date: "",
+  number_of_doses: 4, // Default set to 4 doses
   remarks: ""
 };
 
@@ -31,7 +32,7 @@ export default function Recommendations() {
 
   // Modals & Forms
   const [showModal, setShowModal] = useState(false);
-  const [editingId, setEditingId] = useState(null); // Track if editing
+  const [editingId, setEditingId] = useState(null);
   const [form, setForm] = useState(initialForm);
   const [selectedMaterialsList, setSelectedMaterialsList] = useState([]);
 
@@ -119,7 +120,7 @@ export default function Recommendations() {
     });
   }, [recommendations, searchTerm, testMap, plotMap, customerMap]);
 
-  // Add material row in the Form builder (Per plant config)
+  // Add material row in the Form builder
   const addMaterialRow = () => {
     setSelectedMaterialsList([
       ...selectedMaterialsList,
@@ -144,13 +145,17 @@ export default function Recommendations() {
   // Open modal for editing an existing recommendation
   const handleEdit = async (rec) => {
     setEditingId(rec.id);
-    setForm({
-      soil_test_id: rec.soil_test_id,
-      recommendation_date: rec.recommendation_date,
-      remarks: rec.remarks || ""
-    });
-
     try {
+      const allDoses = await db.select("dose_records");
+      const filteredDoses = allDoses.filter(d => d.recommendation_id === rec.id);
+
+      setForm({
+        soil_test_id: rec.soil_test_id,
+        recommendation_date: rec.recommendation_date,
+        number_of_doses: filteredDoses.length || 4,
+        remarks: rec.remarks || ""
+      });
+
       const allRecM = await db.select("recommendation_materials");
       const filteredRecM = allRecM.filter(m => m.recommendation_id === rec.id);
       setSelectedMaterialsList(
@@ -170,7 +175,15 @@ export default function Recommendations() {
     setShowModal(true);
   };
 
-  // Form Submission & Automatic 4-Dose Generation / Update
+  // Helper to convert quantity to Kg for backend total calculations
+  const convertToKg = (qty, unit) => {
+    const val = Number(qty) || 0;
+    if (unit === "g") return val / 1000;
+    if (unit === "mg") return val / 1000000;
+    return val; // Kg, L, ml treated as base equivalent or default
+  };
+
+  // Form Submission & Automatic Dose Generation / Update
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.soil_test_id) {
@@ -186,22 +199,20 @@ export default function Recommendations() {
       const testObj = soilTests.find(t => t.id === form.soil_test_id);
       const plotObj = plots.find(p => p.id === testObj.plot_id);
       const plantCount = Number(plotObj?.number_of_plants || plotObj?.plant_count || 1);
+      const totalDosesCount = Number(form.number_of_doses) || 4;
 
       let targetRecId = editingId;
 
       if (editingId) {
-        // Update existing recommendation
         await db.update("recommendations", editingId, {
           soil_test_id: form.soil_test_id,
           recommendation_date: form.recommendation_date,
           remarks: form.remarks
         });
 
-        // Clear out old materials and doses to regenerate cleanly
         await db.deleteWhere("recommendation_materials", { recommendation_id: editingId });
         await db.deleteWhere("dose_records", { recommendation_id: editingId });
       } else {
-        // 1. Insert Recommendation
         const newRec = await db.insert("recommendations", {
           soil_test_id: form.soil_test_id,
           recommendation_date: form.recommendation_date,
@@ -210,32 +221,37 @@ export default function Recommendations() {
         targetRecId = newRec.id;
       }
 
-      // 3. Save prescribed materials (calculating total_quantity = qty_per_plant * plantCount)
+      // Save prescribed materials with total quantity normalized into Kg
       for (const mat of selectedMaterialsList) {
         const qtyPerPlant = Number(mat.quantity_per_plant);
-        const totalQty = qtyPerPlant * plantCount;
+        const unit = mat.unit || "Kg";
+        const totalQtyInKg = convertToKg(qtyPerPlant * plantCount, unit);
 
         await db.insert("recommendation_materials", {
           recommendation_id: targetRecId,
           material_name: mat.material_name,
           category: mat.category,
           quantity_per_plant: qtyPerPlant,
-          total_quantity: totalQty,
-          unit: mat.unit,
+          total_quantity: totalQtyInKg,
+          unit: "Kg",
           remarks: mat.remarks
         });
       }
 
-      // 4. Automatically generate 4 doses matching structure text descriptors
+      // Automatically generate configured number of doses
       const materialDescriptions = selectedMaterialsList.map(item => {
-        const totalQtyCalc = Number(item.quantity_per_plant) * plantCount;
-        return `${item.material_name || "Input"} (${totalQtyCalc} ${item.unit || "Kg"})`;
+        const totalQtyInKg = convertToKg(Number(item.quantity_per_plant) * plantCount, item.unit || "Kg");
+        return `${item.material_name || "Input"} (${totalQtyInKg} Kg)`;
       }).join(", ");
 
       const baseDate = new Date(form.recommendation_date);
-      for (let doseNo = 1; doseNo <= 4; doseNo++) {
+      for (let doseNo = 1; doseNo <= totalDosesCount; doseNo++) {
         const planned = new Date(baseDate);
         planned.setDate(planned.getDate() + (doseNo - 1) * 30);
+
+        const totalDoseQtyKg = selectedMaterialsList.reduce((sum, item) => {
+          return sum + convertToKg(Number(item.quantity_per_plant || 0) * plantCount, item.unit || "Kg");
+        }, 0);
 
         await db.insert("dose_records", {
           recommendation_id: targetRecId,
@@ -246,13 +262,12 @@ export default function Recommendations() {
           due_date: planned.toISOString().split("T")[0],
           applied_date: null,
           materials_applied: materialDescriptions,
-          quantity: selectedMaterialsList.reduce((sum, item) => sum + (Number(item.quantity_per_plant || 0) * plantCount), 0),
+          quantity: totalDoseQtyKg,
           status: "Pending",
           field_remarks: ""
         });
       }
 
-      // 5. Update Soil Test status to 'Completed'
       await db.update("soil_tests", form.soil_test_id, { report_status: "Completed" });
 
       setShowModal(false);
@@ -260,7 +275,7 @@ export default function Recommendations() {
       setForm(initialForm);
       setSelectedMaterialsList([]);
       fetchData();
-      alert(editingId ? "Prescription updated successfully!" : "Fertilizer prescription generated successfully! 4 doses created.");
+      alert(editingId ? "Prescription updated successfully!" : `Fertilizer prescription generated successfully! ${totalDosesCount} doses created.`);
     } catch (err) {
       console.error(err);
       alert("Error saving prescription recipe.");
@@ -365,7 +380,7 @@ export default function Recommendations() {
                         <td>{plotObj.plot_number}</td>
                         <td>{rec.recommendation_date}</td>
                         <td>
-                          <span style={statusBadgeStyle("Active")}>Active (4 Doses)</span>
+                          <span style={statusBadgeStyle("Active")}>Active Recipe</span>
                         </td>
                         <td style={{ textAlign: "right" }}>
                           <div style={actionsContainerStyle}>
@@ -445,7 +460,7 @@ export default function Recommendations() {
                           </div>
                         </div>
                         <div style={materialQtyStyle}>
-                          {rm.total_quantity} {rm.unit || "Kg"} Total
+                          {rm.total_quantity} Kg Total
                         </div>
                       </div>
                     );
@@ -453,9 +468,9 @@ export default function Recommendations() {
                 </div>
               </div>
 
-              {/* 4 Doses Status logs */}
+              {/* Doses Status logs */}
               <div style={detailSectionStyle}>
-                <h4 style={sectionTitleStyle}>Four Dose Application Planner</h4>
+                <h4 style={sectionTitleStyle}>Dose Application Planner ({recDoses.length} Doses)</h4>
                 <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
                   {recDoses.map(dose => (
                     <div key={dose.id} style={doseItemStyle}>
@@ -518,6 +533,19 @@ export default function Recommendations() {
                     className="form-input"
                     value={form.recommendation_date}
                     onChange={(e) => setForm({ ...form, recommendation_date: e.target.value })}
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="form-label">Number of Doses *</label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="12"
+                    className="form-input"
+                    value={form.number_of_doses}
+                    onChange={(e) => setForm({ ...form, number_of_doses: e.target.value })}
                     required
                   />
                 </div>
