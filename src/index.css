@@ -912,51 +912,72 @@ div[style*="position: relative"] input {
 }
 
 /* ============================================================
-   SHRINKING TRANSPARENT NAVBAR EFFECT
+   TRANSPARENT TO YOUNG-LEAF LIGHT GREEN SHRINKING NAVBAR
    ============================================================ */
+
+/* Initial State: Completely transparent at top of page */
 .top-navbar {
-  /* Initial State: Large, semi-transparent frosted look */
-  background: rgba(15, 23, 42, 0.75);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: transparent !important;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Header row initial spacious padding */
+/* Header row initial padding */
 .top-navbar .top-navbar-header {
   padding: 16px 24px;
-  transition: padding 0.3s ease;
+  transition: padding 0.35s ease;
 }
 
-/* Scrolled State: Compact, solid corporate charcoal with crisp shadow */
+/* Scrolled State: Shrunk, smooth young-leaf light green with crisp shadow */
 .top-navbar.scrolled {
-  background: rgba(15, 23, 42, 0.96);
+  background: #d1fae5 !important; /* Fresh young-leaf light green tint */
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 8px 25px -4px rgba(5, 150, 105, 0.15), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid #a7f3d0;
 }
 
-/* Shrink header padding when scrolled */
+/* Compress header padding on scroll */
 .top-navbar.scrolled .top-navbar-header {
   padding: 8px 24px;
 }
 
-/* Shrink logo image slightly on scroll for polish */
+/* Shrink logo image on scroll */
 .top-navbar.scrolled .top-navbar-brand img {
   height: 32px;
   width: 32px;
-  transition: all 0.3s ease;
+  transition: all 0.35s ease;
 }
 
-/* Adjust main content top spacing buffer to match dynamic navbar */
+/* Change text and icon colors to dark slate-green when scrolled for high contrast on light green */
+.top-navbar.scrolled .top-navbar-title h2,
+.top-navbar.scrolled .top-navbar-actions,
+.top-navbar.scrolled .top-navbar-date,
+.top-navbar.scrolled .top-nav-link {
+  color: #064e3b !important;
+}
+
+.top-navbar.scrolled .top-nav-link:hover,
+.top-navbar.scrolled .top-nav-link.active {
+  color: #022c22 !important;
+  background: rgba(16, 185, 129, 0.15);
+}
+
+.top-navbar.scrolled .top-navbar-notif,
+.top-navbar.scrolled .top-navbar-avatar {
+  background: rgba(16, 185, 129, 0.12);
+  color: #064e3b;
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+/* Adjust content spacing */
 .content-area {
   margin-top: 120px;
-  transition: margin-top 0.3s ease;
+  transition: margin-top 0.35s ease;
 }
 .top-navbar.scrolled ~ .content-area,
 body:has(.top-navbar.scrolled) .content-area {
-  /* Shrinks container buffer slightly as navbar compresses */
-  margin-top: 96px; 
+  margin-top: 96px;
 }
