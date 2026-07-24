@@ -1,6 +1,6 @@
 import { AuthProvider } from "./contexts/AuthContext";
 import AppRoutes from "./routes/Approutes";
-import ProtocolGuide from "./pages/ProtocolGuide"; 
+
 
 function App() {
   return (
