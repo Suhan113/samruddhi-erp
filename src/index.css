@@ -912,127 +912,100 @@ div[style*="position: relative"] input {
 }
 
 /* ============================================================
-   TRANSPARENT TO SOLID OFF-WHITE (DARK WHITE) SHRINKING NAVBAR
+   TRANSPARENT GLASS NAVBAR WITH PITCH BLACK FONTS
    ============================================================ */
 
-/* Initial State: Fully transparent glass look at the top of the page */
+/* Initial State: Elegant frosted glass with dark text */
 .top-navbar {
-  background: rgba(255, 255, 255, 0.12) !important;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.25) !important;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
   transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Header row initial padding */
+/* Header row padding */
 .top-navbar .top-navbar-header {
   padding: 16px 24px;
   transition: padding 0.35s ease;
 }
 
-/* Ensure initial text/icons are bright and visible on transparent background */
+/* FORCE ALL FONTS, LABELS, AND TEXT TO BE PITCH BLACK */
 .top-navbar .top-navbar-title h2,
 .top-navbar .top-navbar-actions div,
 .top-navbar .top-navbar-date,
-.top-navbar .top-nav-link {
-  color: #ffffff !important;
+.top-navbar .top-nav-link,
+.top-navbar .top-navbar-profile .name,
+.top-navbar .top-navbar-profile .role {
+  color: #000000 !important;
 }
 
+.top-navbar .top-navbar-title span {
+  color: #047857 !important; /* Rich green for subtext */
+}
+
+/* Search bar styling with clear dark text */
 .top-navbar .top-navbar-search input {
-  color: #ffffff !important;
-  background: rgba(255, 255, 255, 0.15) !important;
-  border-color: rgba(255, 255, 255, 0.25) !important;
+  color: #000000 !important;
+  background: rgba(0, 0, 0, 0.05) !important;
+  border-color: rgba(0, 0, 0, 0.15) !important;
 }
 .top-navbar .top-navbar-search input::placeholder {
-  color: rgba(255, 255, 255, 0.7) !important;
+  color: rgba(0, 0, 0, 0.5) !important;
 }
 .top-navbar .top-navbar-search svg {
-  color: rgba(255, 255, 255, 0.8) !important;
+  color: #000000 !important;
+}
+
+/* Icons, buttons, and avatars contrast */
+.top-navbar .top-navbar-notif,
+.top-navbar .top-navbar-avatar {
+  background: rgba(0, 0, 0, 0.06);
+  color: #000000;
+  border-color: rgba(0, 0, 0, 0.12);
 }
 
 
 /* ============================================================
-   SCROLLED STATE: SOLID "DARK WHITE" (CREAM / OFF-WHITE)
+   SCROLLED STATE: SHRUNK FROSTED GLASS (NO WHITE, STILL CLEAR)
    ============================================================ */
 .top-navbar.scrolled {
-  background: #faf8f3 !important; /* Solid dark white / soft cream from reference */
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  box-shadow: 0 10px 30px rgba(11, 61, 46, 0.08); /* Soft professional shadow */
-  border-bottom: 1px solid #e4ede8; /* Clean subtle border */
+  background: rgba(255, 255, 255, 0.45) !important; /* Slightly richer frosted glass, not solid white */
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 }
 
-/* Compress header height and padding smoothly on scroll */
+/* Compress header height on scroll */
 .top-navbar.scrolled .top-navbar-header {
   padding: 8px 24px;
 }
 
-/* Shrink logo slightly on scroll */
+/* Shrink logo on scroll */
 .top-navbar.scrolled .top-navbar-brand img {
   height: 34px;
   width: 34px;
   transition: all 0.35s ease;
 }
 
-/* SWITCH ALL TEXT & NAV LINKS TO SHARP DARK TEXT (#1a2e26) WHEN SCROLLED */
-.top-navbar.scrolled .top-navbar-title h2 {
-  color: #1a2e26 !important;
-}
-.top-navbar.scrolled .top-navbar-title span {
-  color: #1db954 !important; /* Keeps the green version tag crisp */
-}
-
-.top-navbar.scrolled .top-navbar-date {
-  color: #6b7c74 !important;
-  background: rgba(0, 0, 0, 0.04) !important;
-  border-color: #e4ede8 !important;
-}
-
-.top-navbar.scrolled .top-navbar-notif {
-  background: rgba(0, 0, 0, 0.04);
-  color: #1a2e26;
-  border-color: #e4ede8;
-}
-
-.top-navbar.scrolled .top-navbar-profile .name {
-  color: #1a2e26 !important;
-}
-.top-navbar.scrolled .top-navbar-profile .role {
-  color: #6b7c74 !important;
-}
-
-.top-navbar.scrolled .top-navbar-avatar {
-  background: #dff0e8;
-  color: #0b3d2e;
-  border-color: #1db954;
-}
-
-/* Desktop Navigation Links Text Color and Hover State */
+/* KEEP EVERYTHING PITCH BLACK WHEN SCROLLED */
+.top-navbar.scrolled .top-navbar-title h2,
+.top-navbar.scrolled .top-navbar-date,
+.top-navbar.scrolled .top-navbar-profile .name,
+.top-navbar.scrolled .top-navbar-profile .role,
 .top-navbar.scrolled .top-nav-link {
-  color: #1a2e26 !important;
+  color: #000000 !important;
 }
 
 .top-navbar.scrolled .top-nav-link:hover,
 .top-navbar.scrolled .top-nav-link.active {
-  color: #0b3d2e !important;
-  background: rgba(29, 185, 84, 0.08);
-  border-bottom-color: #1db954;
+  color: #047857 !important;
+  background: rgba(0, 0, 0, 0.06);
+  border-bottom-color: #059669;
 }
 
-/* Search Bar styling when scrolled (Clean dark text on soft light input background) */
-.top-navbar.scrolled .top-navbar-search input {
-  background: #ffffff !important;
-  border-color: #e4ede8 !important;
-  color: #1a2e26 !important;
-}
-.top-navbar.scrolled .top-navbar-search input::placeholder {
-  color: #6b7c74 !important;
-}
-.top-navbar.scrolled .top-navbar-search svg {
-  color: #6b7c74 !important;
-}
-
-/* Adjust page content top spacing buffer to match dynamic navbar */
+/* Content spacing buffer */
 .content-area {
   margin-top: 120px;
   transition: margin-top 0.35s ease;
