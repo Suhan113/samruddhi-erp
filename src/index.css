@@ -806,45 +806,24 @@ textarea.form-input { resize: vertical; min-height: 90px; }
   .page-header  { margin-bottom: 16px; }
   .page-title   { font-size: 18px; }
 
-  /* OVERRIDE INLINE GRIDS SAFELY (Excluding specific split-form rows) */
-  div[style*="grid-template-columns"]:not(.recipe-input-row),
-  div[style*="gridTemplateColumns"]:not(.recipe-input-row) {
-    grid-template-columns: 1fr !important;
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 12px !important;
-    width: 100% !important;
-  }
-
-  /* FIX INLINE FLEX CONTAINERS & ACTION BUTTON SPACING */
-  div[style*="display: flex"],
-  div[style*="display:flex"] {
-    flex-wrap: wrap !important;
-    max-width: 100% !important;
-  }
-
-  /* STAT CARDS, DRAWERS & MODALS FIT SCREEN */
-  .stat-card,
-  .card-premium,
-  div[style*="flex: 1"],
-  div[style*="flex:1"] {
-    min-width: 100% !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
-    max-width: 100vw !important;
-  }
-
-  /* MODALS & DRAWERS FULL WIDTH FIX */
-  div[style*="position: fixed"],
-  div[style*="position:fixed"],
-  div[style*="position: sticky"],
-  div[style*="position:sticky"] {
+  /* FIX: Only target true modal overlays, leaving detail drawers scrollable & intact */
+  div[style*="position: fixed"]:not([class*="drawer"]):not([class*="panel"]),
+  div[style*="position:fixed"]:not([class*="drawer"]):not([class*="panel"]) {
     width: 100% !important;
     max-width: 100vw !important;
     left: 0 !important;
     right: 0 !important;
     margin: 0 !important;
     box-sizing: border-box !important;
+  }
+
+  /* Make detail drawers and side panels behave gracefully on mobile */
+  div[style*="position: sticky"],
+  div[style*="position:sticky"] {
+    position: relative !important;
+    top: 0 !important;
+    max-height: none !important;
+    width: 100% !important;
   }
 
   /* FULL-WIDTH BUTTON OVERRIDES */
@@ -872,6 +851,7 @@ textarea.form-input { resize: vertical; min-height: 90px; }
 
   .table-container { border-radius: var(--radius-sm); }
 }
+
 
 /* ============================================================
    RESPONSIVE — SMALL PHONES (≤480px)
