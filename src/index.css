@@ -372,7 +372,7 @@ a { text-decoration: none; color: inherit; }
 }
 
 /* ============================================================
-   HAMBURGER BUTTON (mobile only) — BLACK LINES
+   HAMBURGER BUTTON (mobile only) — PITCH BLACK LINES
    ============================================================ */
 .mobile-menu-btn {
   display: none;
@@ -387,6 +387,9 @@ a { text-decoration: none; color: inherit; }
   cursor: pointer;
   flex-shrink: 0;
   transition: background var(--transition-fast);
+}
+.mobile-menu-btn svg {
+  color: #000000 !important;
 }
 .mobile-menu-btn:hover { background: rgba(0,0,0,0.1); }
 
