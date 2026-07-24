@@ -20,6 +20,7 @@ import Login from "../pages/Login/Login";
 // Layout
 import MainLayout from "../components/layout/MainLayout";
 import { RiLeafLine } from "react-icons/ri";
+import ProtocolGuide from "../pages/ProtocolGuide";
 
 // Route Guard for Authenticated Users
 function ProtectedRoute({ children }) {
