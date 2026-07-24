@@ -784,9 +784,6 @@ textarea.form-input { resize: vertical; min-height: 90px; }
 /* ============================================================
    RESPONSIVE — MOBILE (≤768px)
    ============================================================ */
-/* ============================================================
-   RESPONSIVE — MOBILE (≤768px)
-   ============================================================ */
 @media (max-width: 768px) {
   .mobile-menu-btn  { display: flex !important; }
   .desktop-nav      { display: none !important; }
@@ -809,17 +806,20 @@ textarea.form-input { resize: vertical; min-height: 90px; }
   .page-header  { margin-bottom: 16px; }
   .page-title   { font-size: 18px; }
 
-  /* 1. FORCE TWO-COLUMN / SIDE-PANEL GRIDS TO STACK VERTICALLY */
-  div[style*="grid-template-columns"],
-  div[style*="gridTemplateColumns"] {
-    grid-template-columns: 1fr !important;
+  /* COMPREHENSIVE FIX: DISABLE UNSTRUCTURED INLINE GRID CRUSHING ON MOBILE */
+  /* This prevents the side-by-side split layouts and side panels from breaking */
+  div[style*="grid-template-columns: 1.6fr 1fr"],
+  div[style*="gridTemplateColumns: '1.6fr 1fr'"],
+  div[style*="grid-template-columns: 1fr 1fr"],
+  div[style*="gridTemplateColumns"],
+  div[style*="grid"] {
     display: flex !important;
     flex-direction: column !important;
-    gap: 16px !important;
     width: 100% !important;
+    box-sizing: border-box !important;
   }
 
-  /* 2. FORCE DETAIL DRAWERS / SIDE CARDS TO APPEAR BELOW INSTEAD OF BESIDE */
+  /* FORCE SIDE PANELS AND DETAIL DRAWERS TO STACK NATURALLY BELOW TABLES */
   div[style*="position: sticky"],
   div[style*="position:sticky"],
   div[style*="position: fixed"],
@@ -831,11 +831,12 @@ textarea.form-input { resize: vertical; min-height: 90px; }
     bottom: auto !important;
     max-height: none !important;
     width: 100% !important;
-    margin-top: 16px !important;
+    margin-top: 20px !important;
     box-shadow: var(--shadow-md) !important;
+    z-index: 10 !important;
   }
 
-  /* 3. FIX DOSE PLANNER & FORM MATRICES */
+  /* FORCE DOSE PLANNER & FORM MATRICES TO STACK FLUIDLY */
   .dose-planner-container,
   div[style*="flex-direction: row"],
   div[style*="display: flex"] {
@@ -844,17 +845,18 @@ textarea.form-input { resize: vertical; min-height: 90px; }
     width: 100% !important;
   }
 
-  /* Stat cards, inputs, and tables fill 100% width cleanly */
+  /* STAT CARDS, INPUTS, TABLES, AND FORM FIELDS FILL 100% WIDTH CLEANLY */
   .stat-card,
   .card-premium,
   .form-input, 
   select, 
   textarea { 
     width: 100% !important; 
+    max-width: 100% !important;
     box-sizing: border-box !important;
   }
 
-  /* FULL-WIDTH BUTTON OVERRIDES */
+  /* FULL-WIDTH BUTTON OVERRIDES FOR MOBILE */
   .btn-primary, .btn-secondary, .btn-danger, .btn-ghost { 
     width: 100% !important; 
     justify-content: center !important; 
