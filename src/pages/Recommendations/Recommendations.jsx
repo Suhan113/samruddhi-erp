@@ -830,4 +830,4 @@ const deleteRowBtnStyle = {
   alignItems: "center",
   justifyContent: "center",
   flexShrink: 0
-};
+}; 
