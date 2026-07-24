@@ -886,3 +886,32 @@ textarea.form-input { resize: vertical; min-height: 90px; }
   .top-navbar-notif      { width: 30px; height: 30px; }
   .page-title            { font-size: 16px; }
 }
+.search-wrapper,
+div[style*="position: relative"] {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+/* Properly center the search icon vertically */
+.search-wrapper svg,
+div[style*="position: relative"] svg {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Ensure padding leaves room for the icon */
+.search-input,
+div[style*="position: relative"] input {
+  width: 100%;
+  padding: 10px 14px 10px 40px !important;
+  box-sizing: border-box;
+}
