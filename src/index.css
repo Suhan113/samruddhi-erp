@@ -910,3 +910,53 @@ div[style*="position: relative"] input {
   padding: 10px 14px 10px 40px !important;
   box-sizing: border-box;
 }
+
+/* ============================================================
+   SHRINKING TRANSPARENT NAVBAR EFFECT
+   ============================================================ */
+.top-navbar {
+  /* Initial State: Large, semi-transparent frosted look */
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Header row initial spacious padding */
+.top-navbar .top-navbar-header {
+  padding: 16px 24px;
+  transition: padding 0.3s ease;
+}
+
+/* Scrolled State: Compact, solid corporate charcoal with crisp shadow */
+.top-navbar.scrolled {
+  background: rgba(15, 23, 42, 0.96);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* Shrink header padding when scrolled */
+.top-navbar.scrolled .top-navbar-header {
+  padding: 8px 24px;
+}
+
+/* Shrink logo image slightly on scroll for polish */
+.top-navbar.scrolled .top-navbar-brand img {
+  height: 32px;
+  width: 32px;
+  transition: all 0.3s ease;
+}
+
+/* Adjust main content top spacing buffer to match dynamic navbar */
+.content-area {
+  margin-top: 120px;
+  transition: margin-top 0.3s ease;
+}
+.top-navbar.scrolled ~ .content-area,
+body:has(.top-navbar.scrolled) .content-area {
+  /* Shrinks container buffer slightly as navbar compresses */
+  margin-top: 96px; 
+}
