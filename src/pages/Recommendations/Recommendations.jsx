@@ -1,14 +1,11 @@
 import { useEffect, useState, useMemo } from "react";
 import { db } from "../../services/database";
 import {
-  RiFileTextLine,
   RiSearchLine,
   RiAddCircleLine,
   RiEyeLine,
   RiDeleteBinLine,
-  RiCloseLine,
-  RiPlantLine,
-  RiFileList2Line
+  RiCloseLine
 } from "react-icons/ri";
 
 const initialForm = {
@@ -111,17 +108,17 @@ export default function Recommendations() {
       const customer = customerMap[plot.customer_id] || {};
 
       return (
-        customer.name || ""
-      ).toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (plot.plot_number || "").toLowerCase().includes(searchTerm.toLowerCase());
+        (customer.name || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (plot.plot_number || "").toLowerCase().includes(searchTerm.toLowerCase())
+      );
     });
   }, [recommendations, searchTerm, testMap, plotMap, customerMap]);
 
-  // Add material row in the Form builder (Updated to Free Typing Structures)
+  // Add material row in the Form builder (Streamlined Inputs)
   const addMaterialRow = () => {
     setSelectedMaterialsList([
       ...selectedMaterialsList,
-      { material_name: "", category: "Organic", quantity_per_plant: 0, total_quantity: 0, unit: "Kg", remarks: "" }
+      { material_name: "", category: "Organic", number_of_plants: "", kg_per_plant: "", remarks: "" }
     ]);
   };
 
@@ -147,7 +144,7 @@ export default function Recommendations() {
       return;
     }
     if (selectedMaterialsList.length === 0) {
-      alert("Please prescribe at least one organic or chemical input material.");
+      alert("Please prescribe at least one input material line.");
       return;
     }
 
@@ -163,28 +160,38 @@ export default function Recommendations() {
       const testObj = soilTests.find(t => t.id === form.soil_test_id);
       const plotObj = plots.find(p => p.id === testObj.plot_id);
 
-      // 3. Save prescribed materials manually entered free-text entries
+      // 3. Save prescribed materials with calculated total bulk
       for (const mat of selectedMaterialsList) {
+        const plantsCount = Number(mat.number_of_plants || 0);
+        const dosagePerPlant = Number(mat.kg_per_plant || 0);
+        const computedTotalBulk = plantsCount * dosagePerPlant;
+
         await db.insert("recommendation_materials", {
           recommendation_id: newRec.id,
           material_name: mat.material_name,
           category: mat.category,
-          quantity_per_plant: Number(mat.quantity_per_plant),
-          total_quantity: Number(mat.total_quantity),
-          unit: mat.unit,
+          quantity_per_plant: dosagePerPlant,
+          number_of_plants: plantsCount,
+          total_quantity: computedTotalBulk,
+          unit: "Kg",
           remarks: mat.remarks
         });
       }
 
-      // 4. Automatically generate 4 doses matching manual structure text descriptors
+      // 4. Automatically generate 4 doses matching structural descriptors
       const materialDescriptions = selectedMaterialsList.map(item => {
-        return `${item.material_name || "Input"} (${item.total_quantity} ${item.unit || "Kg"})`;
+        const total = Number(item.number_of_plants || 0) * Number(item.kg_per_plant || 0);
+        return `${item.material_name || "Input"} (${total} Kg)`;
       }).join(", ");
 
       const baseDate = new Date(form.recommendation_date);
       for (let doseNo = 1; doseNo <= 4; doseNo++) {
         const planned = new Date(baseDate);
         planned.setDate(planned.getDate() + (doseNo - 1) * 30);
+
+        const sumBulk = selectedMaterialsList.reduce((sum, item) => {
+          return sum + (Number(item.number_of_plants || 0) * Number(item.kg_per_plant || 0));
+        }, 0);
 
         await db.insert("dose_records", {
           recommendation_id: newRec.id,
@@ -195,7 +202,7 @@ export default function Recommendations() {
           due_date: planned.toISOString().split("T")[0],
           applied_date: null,
           materials_applied: materialDescriptions,
-          quantity: selectedMaterialsList.reduce((sum, item) => sum + Number(item.total_quantity || 0), 0),
+          quantity: sumBulk,
           status: "Pending",
           field_remarks: ""
         });
@@ -217,28 +224,19 @@ export default function Recommendations() {
 
   // Delete prescription
   const handleDelete = async (id) => {
-  if (!window.confirm("Delete this recommendation?")) return;
+    if (!window.confirm("Delete this recommendation?")) return;
 
-  try {
-    // Delete recommendation materials first
-    await db.deleteWhere("recommendation_materials", {
-      recommendation_id: id,
-    });
+    try {
+      await db.deleteWhere("recommendation_materials", { recommendation_id: id });
+      await db.deleteWhere("dose_records", { recommendation_id: id });
+      await db.delete("recommendations", id);
 
-    // Delete dose records
-    await db.deleteWhere("dose_records", {
-      recommendation_id: id,
-    });
-
-    // Finally delete recommendation
-    await db.delete("recommendations", id);
-
-    fetchData();
-  } catch (err) {
-    console.error(err);
-    alert("Failed to delete recommendation.");
-  }
-};
+      fetchData();
+    } catch (err) {
+      console.error(err);
+      alert("Failed to delete recommendation.");
+    }
+  };
 
   return (
     <div style={containerStyle}>
@@ -371,25 +369,32 @@ export default function Recommendations() {
                 </div>
               </div>
 
-              {/* Prescribed materials list */}
+              {/* Cleaned Prescribed Materials List */}
               <div style={detailSectionStyle}>
                 <h4 style={sectionTitleStyle}>Prescribed Inputs</h4>
                 <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                  {recMaterials.map(rm => {
-                    return (
-                      <div key={rm.id} style={materialItemStyle}>
-                        <div>
-                          <strong style={{ fontSize: "13px" }}>{rm.material_name}</strong>
-                          <div style={{ fontSize: "11px", color: "var(--text-muted)" }}>
-                            Dosage: {rm.category} • {rm.quantity_per_plant} units / tree
-                          </div>
-                        </div>
-                        <div style={materialQtyStyle}>
-                          {rm.total_quantity} {rm.unit || "Kg"}
+                  {recMaterials.map(rm => (
+                    <div key={rm.id} style={materialItemStyle}>
+                      <div>
+                        <strong style={{ fontSize: "13.5px", color: "var(--text-main)" }}>
+                          {rm.material_name}
+                        </strong>
+                        <div style={{ fontSize: "11px", color: "var(--text-muted)", marginTop: "2px" }}>
+                          Category: {rm.category || "Organic"} {rm.remarks && `• ${rm.remarks}`}
                         </div>
                       </div>
-                    );
-                  })}
+                      <div style={{ textAlign: "right" }}>
+                        <div style={{ fontWeight: 800, color: "var(--primary)", fontSize: "14px" }}>
+                          {rm.quantity_per_plant ? `${rm.quantity_per_plant} Kg/Plant` : `${rm.total_quantity || 0} Kg`}
+                        </div>
+                        {rm.number_of_plants && (
+                          <div style={{ fontSize: "11px", color: "var(--text-muted)", marginTop: "1px" }}>
+                            For {rm.number_of_plants} Plants
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
 
@@ -471,10 +476,10 @@ export default function Recommendations() {
                   />
                 </div>
 
-                {/* Recipe Materials builder */}
+                {/* Recipe Materials Builder */}
                 <div style={{ gridColumn: "1 / -1", borderTop: "1px solid var(--border)", paddingTop: "16px", marginTop: "10px" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
-                    <h4 style={{ fontSize: "14px", fontWeight: 700 }}>Prescribe Input Materials (Free Text Inputs Canvas)</h4>
+                    <h4 style={{ fontSize: "14px", fontWeight: 700 }}>Prescribe Input Materials</h4>
                     <button type="button" className="btn-secondary" onClick={addMaterialRow} style={{ padding: "6px 12px", fontSize: "12px" }}>
                       + Append Material Line
                     </button>
@@ -482,24 +487,27 @@ export default function Recommendations() {
 
                   {selectedMaterialsList.length === 0 ? (
                     <div style={{ padding: "16px", textAlign: "center", background: "var(--bg-app)", borderRadius: "8px", border: "1px dashed var(--border)", fontSize: "13px", color: "var(--text-muted)" }}>
-                      No materials selected. Click '+ Append Material Line' to begin prescribing free-text rows.
+                      No materials selected. Click '+ Append Material Line' to begin prescribing rows.
                     </div>
                   ) : (
                     <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
                       {selectedMaterialsList.map((row, idx) => (
-                        <div key={idx} style={{ display: "flex", gap: "6px", alignItems: "center" }}>
+                        <div key={idx} style={{ display: "flex", gap: "8px", alignItems: "center", flexWrap: "wrap" }}>
+                          {/* Material Name */}
                           <input
                             type="text"
                             className="form-input"
-                            style={{ width: "25%" }}
+                            style={{ flex: "2", minWidth: "140px" }}
                             placeholder="Material Name"
                             value={row.material_name}
                             onChange={(e) => updateMaterialRow(idx, "material_name", e.target.value)}
                             required
                           />
+
+                          {/* Category */}
                           <select
                             className="form-input"
-                            style={{ width: "15%" }}
+                            style={{ flex: "1.2", minWidth: "110px" }}
                             value={row.category}
                             onChange={(e) => updateMaterialRow(idx, "category", e.target.value)}
                           >
@@ -509,41 +517,41 @@ export default function Recommendations() {
                             <option value="Micronutrient">Micronutrient</option>
                             <option value="Amendment">Amendment</option>
                           </select>
+
+                          {/* Number of Plants */}
                           <input
                             className="form-input"
                             type="number"
-                            step="0.001"
-                            style={{ width: "12%" }}
-                            placeholder="Qty/Tree"
-                            value={row.quantity_per_plant}
-                            onChange={(e) => updateMaterialRow(idx, "quantity_per_plant", e.target.value)}
+                            style={{ flex: "1", minWidth: "90px" }}
+                            placeholder="No. of Plants"
+                            value={row.number_of_plants}
+                            onChange={(e) => updateMaterialRow(idx, "number_of_plants", e.target.value)}
+                            required
                           />
+
+                          {/* Kg / Plant */}
                           <input
                             className="form-input"
                             type="number"
                             step="0.01"
-                            style={{ width: "15%" }}
-                            placeholder="Total Bulk Qty"
-                            value={row.total_quantity}
-                            onChange={(e) => updateMaterialRow(idx, "total_quantity", e.target.value)}
+                            style={{ flex: "1", minWidth: "90px" }}
+                            placeholder="Kg / Plant"
+                            value={row.kg_per_plant}
+                            onChange={(e) => updateMaterialRow(idx, "kg_per_plant", e.target.value)}
                             required
                           />
+
+                          {/* Remarks */}
                           <input
                             type="text"
                             className="form-input"
-                            style={{ width: "10%" }}
-                            placeholder="Unit (Kg)"
-                            value={row.unit}
-                            onChange={(e) => updateMaterialRow(idx, "unit", e.target.value)}
-                          />
-                          <input
-                            type="text"
-                            className="form-input"
-                            style={{ width: "18%" }}
+                            style={{ flex: "1.5", minWidth: "110px" }}
                             placeholder="Remarks"
                             value={row.remarks}
                             onChange={(e) => updateMaterialRow(idx, "remarks", e.target.value)}
                           />
+
+                          {/* Delete Button */}
                           <button type="button" onClick={() => removeMaterialRow(idx)} style={deleteRowBtnStyle}>
                             ✕
                           </button>
@@ -579,7 +587,7 @@ const containerStyle = {
 
 const headerStyle = {
   display: "flex",
-  justifyContent: "space-between",
+  justify-content: "space-between",
   alignItems: "center",
   flexWrap: "wrap",
   gap: "16px",
@@ -639,7 +647,7 @@ const selectedRowStyle = {
 
 const actionsContainerStyle = {
   display: "flex",
-  justifyContent: "flex-end",
+  justify-content: "flex-end",
   gap: "6px",
 };
 
@@ -651,12 +659,12 @@ const actionIconBtnStyle = {
   height: "32px",
   display: "flex",
   alignItems: "center",
-  justifyContent: "center",
+  justify-content: center",
   cursor: "pointer",
   color: "var(--text-main)",
 };
 
-const statusBadgeStyle = (status) => ({
+const statusBadgeStyle = () => ({
   fontSize: "11px",
   fontWeight: 700,
   padding: "4px 8px",
@@ -736,12 +744,6 @@ const materialItemStyle = {
   display: "flex",
   justifyContent: "space-between",
   alignItems: "center",
-};
-
-const materialQtyStyle = {
-  fontWeight: 800,
-  color: "var(--primary-hover)",
-  fontSize: "14px",
 };
 
 const doseItemStyle = {
@@ -827,4 +829,5 @@ const deleteRowBtnStyle = {
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
+  flexShrink: 0
 };
