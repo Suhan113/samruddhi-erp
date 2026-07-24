@@ -13,11 +13,11 @@
   --accent-light:   #fef3c7;
 
   /* Light Theme Backgrounds */
-  --bg-app:     #f1f5f4;
-  --bg-card:    #ffffff;
+  --bg-app:      #f1f5f4;
+  --bg-card:     #ffffff;
   --bg-sidebar: #062f21;
   --bg-header:  rgba(255, 255, 255, 0.92);
-  --border:     #e2e8f0;
+  --border:      #e2e8f0;
 
   /* Text */
   --text-main:  #0f172a;
@@ -31,9 +31,9 @@
   --shadow-premium: 0 20px 40px rgba(6,78,59,0.07);
 
   /* Glass */
-  --glass-bg:     rgba(255,255,255,0.75);
+  --glass-bg:       rgba(255,255,255,0.75);
   --glass-border: rgba(255,255,255,0.5);
-  --blur:         16px;
+  --blur:           16px;
 
   /* Typography */
   --font-title: 'Outfit', sans-serif;
@@ -64,7 +64,7 @@ html, body, #root {
   width: 100%;
   max-width: 100vw;
   min-height: 100vh;
-  overflow-x: hidden !important; /* Prevents horizontal screen drift */
+  overflow-x: hidden !important;
   background: var(--bg-app);
   color: var(--text-main);
   font-family: var(--font-body);
@@ -108,7 +108,7 @@ a { text-decoration: none; color: inherit; }
   flex: 1;
   display: flex;
   flex-direction: column;
-  margin-top: 108px; /* Safe-zone buffer for desktop navbar */
+  margin-top: 108px;
   width: 100%;
   max-width: 100vw;
 }
@@ -401,7 +401,7 @@ a { text-decoration: none; color: inherit; }
 .desktop-nav { display: flex; }
 
 .mobile-nav-drawer, .mobile-drawer {
-  display: none !important; /* Hides drawer completely when closed to fix text overlay */
+  display: none !important;
   flex-direction: column;
   background: var(--bg-sidebar);
   border-top: 1px solid rgba(255,255,255,0.06);
@@ -417,7 +417,7 @@ a { text-decoration: none; color: inherit; }
 }
 
 .mobile-nav-drawer.open, .mobile-drawer.open { 
-  display: flex !important; /* Only reveals drawer when open state is active */
+  display: flex !important;
 }
 
 .mobile-nav-search {
@@ -785,72 +785,82 @@ textarea.form-input { resize: vertical; min-height: 90px; }
    RESPONSIVE — MOBILE (≤768px)
    ============================================================ */
 @media (max-width: 768px) {
-  /* Show hamburger; hide desktop nav row */
   .mobile-menu-btn  { display: flex !important; }
   .desktop-nav      { display: none !important; }
 
-  /* Shift main view layout cleanly down below compact single-row header */
   .content-area { margin-top: 56px !important; }
 
-  /* Compact header */
   .top-navbar-header { padding: 10px 14px; gap: 10px; }
 
-  /* Hide non-essential header items */
   .top-navbar-search  { display: none !important; }
   .top-navbar-date    { display: none !important; }
   .top-navbar-userinfo{ display: none !important; }
   .top-navbar-profile { border-left: none; padding-left: 0; }
   .top-navbar-avatar  { width: 28px; height: 28px; }
 
-  /* Icon-only logout */
   .top-navbar-logout .logout-label { display: none; }
   .top-navbar-logout { padding: 6px 8px; }
 
-  /* Content */
   .main-content { padding: 12px !important; }
   .card-premium { padding: 14px !important; }
   .page-header  { margin-bottom: 16px; }
   .page-title   { font-size: 18px; }
 
-  /* 1. OVERRIDE INLINE GRID LAYOUTS (System Configs, Finance Page, etc.) */
-  div[style*="grid-template-columns"],
-  div[style*="gridTemplateColumns"],
-  div[style*="grid"] {
+  /* OVERRIDE INLINE GRIDS SAFELY (Excluding specific split-form rows) */
+  div[style*="grid-template-columns"]:not(.recipe-input-row),
+  div[style*="gridTemplateColumns"]:not(.recipe-input-row) {
     grid-template-columns: 1fr !important;
+    display: flex !important;
     flex-direction: column !important;
     gap: 12px !important;
+    width: 100% !important;
   }
 
-  /* 2. OVERRIDE INLINE FLEX CONTAINERS (Action Buttons & Horizontally Scrolling Stats) */
+  /* FIX INLINE FLEX CONTAINERS & ACTION BUTTON SPACING */
   div[style*="display: flex"],
   div[style*="display:flex"] {
     flex-wrap: wrap !important;
     max-width: 100% !important;
   }
 
-  /* Force stat cards and action buttons to fit neatly in 100% width */
+  /* STAT CARDS, DRAWERS & MODALS FIT SCREEN */
   .stat-card,
+  .card-premium,
   div[style*="flex: 1"],
   div[style*="flex:1"] {
     min-width: 100% !important;
     width: 100% !important;
     box-sizing: border-box !important;
+    max-width: 100vw !important;
   }
 
-  /* 3. FULL-WIDTH BUTTON OVERRIDES */
+  /* MODALS & DRAWERS FULL WIDTH FIX */
+  div[style*="position: fixed"],
+  div[style*="position:fixed"],
+  div[style*="position: sticky"],
+  div[style*="position:sticky"] {
+    width: 100% !important;
+    max-width: 100vw !important;
+    left: 0 !important;
+    right: 0 !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  /* FULL-WIDTH BUTTON OVERRIDES */
   .btn-primary, .btn-secondary, .btn-danger, .btn-ghost { 
     width: 100% !important; 
     justify-content: center !important; 
     white-space: normal !important;
   }
 
-  /* 4. FORM AND INPUT SIZING */
+  /* FORM INPUTS & SELECTS FULL WIDTH */
   .form-input, select, textarea { 
     width: 100% !important; 
     box-sizing: border-box !important;
   }
 
-  /* 5. TABS & HORIZONTAL LIST OVERFLOW SCROLLING */
+  /* HORIZONTAL TABS AUTO-SCROLL FIX */
   div[role="tablist"],
   .tab-container,
   div[style*="border-bottom"] {
@@ -860,7 +870,6 @@ textarea.form-input { resize: vertical; min-height: 90px; }
     width: 100% !important;
   }
 
-  /* Table scroll hint */
   .table-container { border-radius: var(--radius-sm); }
 }
 
