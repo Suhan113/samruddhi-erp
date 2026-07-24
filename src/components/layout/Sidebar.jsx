@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import {
@@ -7,7 +7,7 @@ import {
   RiTeamLine, RiTruckLine, RiCoinsLine, RiBarChartLine,
   RiSettings4Line, RiLogoutBoxRLine, RiUserLine,
   RiSearchLine, RiNotification3Line, RiMenuLine, RiCloseLine,
-  RiBookOpenLine
+  RiBookOpenLine, RiAlertLine
 } from "react-icons/ri";
 
 const menuItems = [
@@ -23,13 +23,27 @@ const menuItems = [
   { to: "/suppliers", label: "Suppliers", icon: RiTruckLine },
   { to: "/finance", label: "Finance", icon: RiCoinsLine },
   { to: "/reports", label: "Reports", icon: RiBarChartLine },
-  { to: "/protocol", label: "Nutrition Protocol", icon: RiBookOpenLine }, // Added here
+  { to: "/protocol", label: "Nutrition Protocol", icon: RiBookOpenLine },
   { to: "/settings", label: "Settings", icon: RiSettings4Line },
 ];
 
 export default function Sidebar() {
   const { user, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  // Detect scroll position to shrink and change navbar style
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 30) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const today = new Date().toLocaleDateString("en-IN", {
     weekday: "short",
@@ -41,10 +55,9 @@ export default function Sidebar() {
   const closeMobileMenu = () => setMobileMenuOpen(false);
 
   return (
-    <header className="top-navbar">
+    <header className={`top-navbar ${isScrolled ? "scrolled" : ""}`}>
       {/* ── Row 1: Brand / Search / User Actions ── */}
       <div className="top-navbar-header">
-        {/* Hamburger (mobile only) */}
         <button
           className="mobile-menu-btn"
           onClick={() => setMobileMenuOpen((o) => !o)}
@@ -53,7 +66,6 @@ export default function Sidebar() {
           {mobileMenuOpen ? <RiCloseLine size={22} /> : <RiMenuLine size={22} />}
         </button>
 
-        {/* Brand */}
         <div className="top-navbar-brand">
           <img src="/logo.png" alt="Samruddhi Organics" />
           <div className="top-navbar-title">
@@ -62,8 +74,7 @@ export default function Sidebar() {
           </div>
         </div>
 
-        {/* Search (hidden on mobile) */}
-        <div className="top-navbar-search">
+        <div className="top-navbar-search search-wrapper">
           <RiSearchLine size={15} />
           <input
             type="text"
@@ -71,7 +82,6 @@ export default function Sidebar() {
           />
         </div>
 
-        {/* Right: Date · Bell · Profile · Logout */}
         <div className="top-navbar-actions">
           <div className="top-navbar-date">{today}</div>
 
@@ -119,15 +129,13 @@ export default function Sidebar() {
         })}
       </nav>
 
-      {/* ── Mobile Drawer: Slide-down nav ── */}
+      {/* ── Mobile Drawer ── */}
       <div className={`mobile-nav-drawer${mobileMenuOpen ? " open" : ""}`}>
-        {/* Mobile search */}
-        <div className="mobile-nav-search">
+        <div className="mobile-nav-search search-wrapper">
           <RiSearchLine size={15} />
           <input type="text" placeholder="Search…" />
         </div>
 
-        {/* Mobile nav links */}
         <nav className="mobile-nav-links">
           {menuItems.map((item) => {
             const Icon = item.icon;
@@ -148,7 +156,6 @@ export default function Sidebar() {
           })}
         </nav>
 
-        {/* Mobile user footer */}
         {user && (
           <div className="mobile-nav-footer">
             <div className="mobile-nav-user">
@@ -168,7 +175,6 @@ export default function Sidebar() {
         )}
       </div>
 
-      {/* Backdrop overlay for mobile drawer */}
       {mobileMenuOpen && (
         <div className="mobile-nav-backdrop" onClick={closeMobileMenu} />
       )}
